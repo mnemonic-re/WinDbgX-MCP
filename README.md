@@ -130,3 +130,8 @@ WinDbgMCP ships with ready-to-use configuration files under `configs/`:
 | `generate_signature` | DebugExt | Generate relocatable byte pattern signature (`makesig`) |
 | `scan_hooks_and_injections`| DebugExt| Detect inline detours, IAT hooks, driver IRP table hooks, shellcode |
 | `audit_pe_security` | DebugExt | Audit PE headers, ASLR/DEP/CFG, PEB anti-debug, & TEB stack limits |
+| `diff_memory_snapshots` | Superpower | Compare byte regions, page protection, and pointers between two memory snapshots |
+| `triage_crash_report` | Superpower | Automated BSOD & crash dump root-cause analyzer (RCA) |
+| `reconstruct_struct` | Superpower | Auto-reconstruct C/C++ struct definitions & ReClass.NET schemas from memory |
+| `trace_api_calls` | Superpower | Generate WinAPI tracing breakpoint sets & argument interception payloads |
+| `unpack_dynamic_pe` | Superpower | Scan dynamic memory for PE signatures (MZ/PE), validate headers, & export payloads |

@@ -22,6 +22,13 @@ from windbg_mcp.cdb_session import (
 from windbg_mcp.cfg_builder import build_cfg_mermaid
 from windbg_mcp.debug_session import DebugSession, DebuggerError
 from windbg_mcp.kd_session import open_kd_session
+from windbg_mcp.re_superpowers import (
+    diff_memory_bytes,
+    reconstruct_struct_definition,
+    synthesize_crash_triage_report,
+    build_api_trace_payload,
+    parse_pe_header_in_memory,
+)
 
 # Initialize FastMCP Server
 mcp = FastMCP(
@@ -309,6 +316,93 @@ def generate_final_report(
         f.write(report_content)
 
     return f"Generated final analysis report at '{report_path}'."
+
+
+@mcp.tool()
+def diff_memory_snapshots(
+    snapshot_A_cmd: str,
+    snapshot_B_cmd: str,
+    base_address: str = "0x00000000",
+    session_id: Optional[str] = None,
+) -> str:
+    """[Antigravity Visual] Execute memory dumps before/after routine execution and generate detailed byte/pointer diffs."""
+    session = get_session(session_id)
+    dump_A = session.run_command(snapshot_A_cmd)
+    dump_B = session.run_command(snapshot_B_cmd)
+    return diff_memory_bytes(dump_A, dump_B, base_address=base_address)
+
+
+@mcp.tool()
+def triage_crash_report(
+    dump_path: str,
+    symbols_path: Optional[str] = None,
+    timeout_seconds: float = 180.0,
+) -> str:
+    """[Antigravity Artifact] Perform full BSOD or user-mode crash dump triage and generate executive Root Cause Analysis (RCA) report."""
+    raw_output, session = open_cdb_dump_session(
+        dump_path=dump_path,
+        symbols_path=symbols_path,
+        include_stack=True,
+        include_modules=True,
+        timeout_seconds=timeout_seconds,
+    )
+    rca_report = synthesize_crash_triage_report(dump_path, raw_output)
+
+    # Save report to root/analysis/FILE_NAME/mds/
+    target_name = os.path.basename(dump_path)
+    analysis_dir, clean_base = _get_analysis_dir(target_name)
+    report_path = analysis_dir / f"{clean_base}_RCA_Report.md"
+    with open(report_path, "w", encoding="utf-8") as f:
+        f.write(rca_report)
+
+    return f"Crash Triage Complete! RCA report saved to '{report_path}'. Summary:\n\n{rca_report}"
+
+
+@mcp.tool()
+def reconstruct_struct(
+    address: str,
+    length: int = 64,
+    struct_name: str = "RECONSTRUCTED_STRUCT",
+    is_64bit: bool = True,
+    session_id: Optional[str] = None,
+) -> str:
+    """[DebugExt] Inspect raw memory address, analyze pointers/dwords, and auto-generate C/C++ struct definition code."""
+    session = get_session(session_id)
+    cmd = f"dq {address} L{length // 8}" if is_64bit else f"dd {address} L{length // 4}"
+    raw_dump = session.run_command(cmd, reasoning=f"Dumping memory bytes at {address} for C/C++ struct reconstruction")
+    return reconstruct_struct_definition(raw_dump, base_address=address, struct_name=struct_name, is_64bit=is_64bit)
+
+
+@mcp.tool()
+def trace_api_calls(
+    api_name: str,
+    module_name: str = "kernel32",
+    session_id: Optional[str] = None,
+) -> str:
+    """[DebugExt] Dynamically trace WinAPI calls (VirtualAlloc, WriteProcessMemory, etc.) and log arguments/stack trace upon execution."""
+    session = get_session(session_id)
+    bp_cmd, reasoning = build_api_trace_payload(api_name=api_name, module_name=module_name)
+    return session.run_command(bp_cmd, reasoning=reasoning)
+
+
+@mcp.tool()
+def unpack_dynamic_pe(
+    address: str,
+    length: int,
+    output_filename: str,
+    session_id: Optional[str] = None,
+) -> str:
+    """[DebugExt] Scan memory region for hidden PE header (MZ), validate structure, and dump unpacked payload to disk artifact."""
+    session = get_session(session_id)
+    raw_dump = session.run_command(f"db {address} L32", reasoning=f"Scanning memory at {address} for hidden PE header (MZ)")
+    valid, pe_info = parse_pe_header_in_memory(raw_dump, base_address=address)
+
+    if not valid:
+        return pe_info
+
+    writemem_cmd = f".writemem {output_filename} {address} L?{length}"
+    export_result = session.run_command(writemem_cmd, reasoning=f"Exporting unpacked PE payload to disk artifact '{output_filename}'")
+    return f"{pe_info}\n\n### Export Result\n```text\n{export_result}\n```"
 
 
 @mcp.tool()

@@ -179,3 +179,52 @@ Automate environment discovery, symbol directory setup, and AI client registrati
 ```bash
 python scripts/install_mcp.py
 ```
+
+---
+
+## 11. Reverse Engineering & Crash Triage Superpowers
+
+WinDbgMCP includes 5 high-impact automation engines designed for memory forensics, crash analysis, and dynamic analysis:
+
+### A. Memory Snapshot Diffing (`diff_memory_snapshots`)
+Compare byte regions, protection flags, and pointer tables between two memory states:
+```python
+diff_memory_snapshots(
+    snapshot_a_hex="48 89 5c 24 08 48 89 6c 24 10",
+    snapshot_b_hex="e9 42 12 00 00 48 89 6c 24 10",
+    base_address="0x7ff69b8c1000"
+)
+```
+
+### B. Automated Crash Dump Root-Cause Analyzer (`triage_crash_report`)
+Synthesizes `.lastevent`, `!analyze -v`, `kb`, and `.cxr` stack frames into an actionable Root-Cause Analysis (RCA) report:
+```python
+triage_crash_report(dump_file_path="C:\\Dumps\\crash.dmp")
+```
+
+### C. Struct & ReClass.NET Reconstructor (`reconstruct_struct`)
+Infers field types, alignments, pointer references, and strings from raw memory bytes to generate C/C++ struct definitions:
+```python
+reconstruct_struct(
+    address="0x021b0000",
+    struct_name="PLAYER_OBJECT",
+    size=64
+)
+```
+
+### D. WinAPI Call Tracing (`trace_api_calls`)
+Generates breakpoint sets and parameter logging payloads for critical WinAPI entry points (`CreateFileW`, `VirtualAllocEx`, etc.):
+```python
+trace_api_calls(api_names=["CreateFileW", "VirtualAllocEx", "WriteProcessMemory"])
+```
+
+### E. Dynamic PE Header Scanner & Payload Unpacker (`unpack_dynamic_pe`)
+Scans dynamic memory for DOS/NT headers (`MZ` / `PE`), validates section tables, and extracts payloads:
+```python
+unpack_dynamic_pe(
+    target_address="0x0000021b00000000",
+    dump_to_disk=True,
+    output_path="unpacked_module.exe"
+)
+```
+
