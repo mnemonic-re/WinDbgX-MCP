@@ -117,6 +117,7 @@ WinDbgMCP ships with ready-to-use configuration files under `configs/`:
 | `render_control_flow_graph`| Visual | Build native Mermaid CFG diagram (`graph TD`) for Antigravity artifacts |
 | `dump_memory_visual` | Visual | Format memory bytes in clean hex/ASCII markdown tables |
 | `dump_rwx_payload` | Visual | Dump unpacked memory regions/shellcode to disk files |
+| `update_analysis_report` | Visual | Append/update continuous technical analysis markdown report on disk |
 | `inspect_function_args`| DebugExt | Inspect live fastcall/stdcall parameters & string/symbol previews |
 | `scan_string_references`| DebugExt | Scan module code/data for ASCII and UTF-16 strings (`strref`) |
 | `find_code_xrefs` | DebugExt | Locate code references (`CALL`, `JMP`, `RIP-rel`) to target address |

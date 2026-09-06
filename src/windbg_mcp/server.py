@@ -220,6 +220,26 @@ def annotate_session(
 
 
 @mcp.tool()
+def update_analysis_report(
+    section_title: str,
+    content: str,
+    report_filename: str = "analysis_report.md",
+) -> str:
+    """[Antigravity Artifact] Append or update a structured technical analysis report section on disk for continuous debugging writeups."""
+    reports_dir = os.path.join(os.getcwd(), "reports")
+    os.makedirs(reports_dir, exist_ok=True)
+    target_path = os.path.join(reports_dir, report_filename)
+
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    formatted_section = f"\n\n---\n\n### {section_title} [{timestamp}]\n\n{content.strip()}\n"
+
+    with open(target_path, "a", encoding="utf-8") as f:
+        f.write(formatted_section)
+
+    return f"Updated analysis report at '{target_path}' with section '{section_title}'."
+
+
+@mcp.tool()
 def run_cdb_command(
     command: str,
     reasoning: Optional[str] = None,
