@@ -24,8 +24,8 @@ PROMPT_REGEX = re.compile(r"^(?:\[.*\]\s*)?(?:\d+:[^>]*|l?kd)>\s*$")
 # Base completion marker string
 MARKER_BASE = "COMMAND_COMPLETED_MARKER"
 
-# Commands that resume target execution (g-class)
-RESUME_COMMANDS = {"g", "gh", "gn", "gc", "gu", "p", "t", "pa", "ta"}
+# Commands that resume target execution (g-class continuous execution)
+RESUME_COMMANDS = {"g", "gh", "gn", "gc", "gu"}
 
 
 class DebuggerError(Exception):
@@ -56,10 +56,13 @@ class DebugSession:
         return f".echo {MARKER_BASE}_{self.sequence_number}"
 
     def _is_resume_command(self, command: str) -> bool:
-        """Check if command resumes execution without halting for output markers."""
-        clean = command.strip()
-        first_token = clean.split()[0].lower() if clean else ""
-        return first_token in RESUME_COMMANDS
+        """Check if command ends with or contains an execution resume command (e.g. 'g', 'bp 0x401000; g')."""
+        clean = command.strip().lower()
+        tokens = [t.strip() for t in re.split(r"[;\n]+", clean) if t.strip()]
+        if not tokens:
+            return False
+        last_cmd = tokens[-1].split()[0]
+        return last_cmd in RESUME_COMMANDS
 
     def start(self, cmd_args: List[str], timeout_seconds: float = 60.0) -> str:
         """Launch the debugger process and await the initial prompt."""
@@ -88,13 +91,26 @@ class DebugSession:
         return initial_output
 
     def _read_output_loop(self) -> None:
-        """Background thread reading lines from debugger stdout."""
+        """Background thread reading lines from debugger stdout with batched lock acquisition."""
         if not self.process or not self.process.stdout:
             return
 
-        for line in self.process.stdout:
-            with self.lock:
-                self.output_buffer.append(line)
+        try:
+            batch: List[str] = []
+            while not self.closed and self.process and self.process.poll() is None:
+                line = self.process.stdout.readline()
+                if not line:
+                    break
+                batch.append(line)
+                if len(batch) >= 50 or not self.output_buffer:
+                    with self.lock:
+                        self.output_buffer.extend(batch)
+                    batch = []
+            if batch:
+                with self.lock:
+                    self.output_buffer.extend(batch)
+        except Exception:
+            pass
 
     def _wait_for_initial_prompt(self, timeout_seconds: float) -> str:
         """Read output until the debugger reaches its first command prompt or remote connection banner."""

@@ -51,19 +51,23 @@ def open_cdb_dump_session(
     session_id = f"cdb-dump-{uuid.uuid4().hex[:8]}"
     session = DebugSession(session_id, debugger_type="cdb")
 
-    initial_output = session.start(cmd_args, timeout_seconds=timeout_seconds)
+    try:
+        initial_output = session.start(cmd_args, timeout_seconds=timeout_seconds)
 
-    # Initial crash dump triage
-    triage_cmd = ".lastevent; !analyze -v"
-    if include_stack:
-        triage_cmd += "; kb"
-    if include_modules:
-        triage_cmd += "; lm"
+        # Initial crash dump triage
+        triage_cmd = ".lastevent; !analyze -v"
+        if include_stack:
+            triage_cmd += "; kb"
+        if include_modules:
+            triage_cmd += "; lm"
 
-    triage_output = session.run_command(triage_cmd, timeout_seconds=timeout_seconds)
-    full_output = f"session_id: {session_id}\n\n=== INITIAL BANNER ===\n{initial_output}\n=== INITIAL TRIAGE ===\n{triage_output}"
+        triage_output = session.run_command(triage_cmd, timeout_seconds=timeout_seconds)
+        full_output = f"session_id: {session_id}\n\n=== INITIAL BANNER ===\n{initial_output}\n=== INITIAL TRIAGE ===\n{triage_output}"
 
-    return full_output, session
+        return full_output, session
+    except Exception as e:
+        session.close()
+        raise DebuggerError(f"Failed to initialize dump session: {e}") from e
 
 
 def open_cdb_remote_session(

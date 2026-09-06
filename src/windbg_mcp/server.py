@@ -49,7 +49,17 @@ atexit.register(cleanup_all_sessions)
 
 
 def get_session(session_id: Optional[str] = None) -> DebugSession:
-    """Retrieve the specified session or the active default session."""
+    """Retrieve specified or default active session, automatically pruning dead/terminated sessions."""
+    global ACTIVE_SESSION_ID
+
+    # Prune closed or terminated sessions automatically
+    for sid in list(SESSIONS.keys()):
+        sess = SESSIONS[sid]
+        if sess.closed or (sess.process and sess.process.poll() is not None):
+            SESSIONS.pop(sid, None)
+            if ACTIVE_SESSION_ID == sid:
+                ACTIVE_SESSION_ID = list(SESSIONS.keys())[-1] if SESSIONS else None
+
     target_id = session_id or ACTIVE_SESSION_ID
     if not target_id:
         if SESSIONS:
