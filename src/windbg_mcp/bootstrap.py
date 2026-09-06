@@ -93,7 +93,15 @@ def auto_register_antigravity(server_config: Dict[str, Any]) -> List[str]:
 
 def run_bootstrap() -> str:
     """Execute complete automated bootstrap setup."""
-    lines = ["=======================================================", " WinDbgMCP Automated Environment Bootstrap", "======================================================="]
+    lines = [
+        "=======================================================",
+        " WinDbgMCP Automated Environment Bootstrap",
+        "=======================================================",
+        "[TIP] Live WinDbg GUI Progress Watching:",
+        "      Start WinDbg GUI on desktop & run: .server tcp:port=5005",
+        "      Then call tool: open_cdb_remote(connection_string=\"tcp:Port=5005,Server=localhost\")",
+        "-------------------------------------------------------",
+    ]
 
     # 1. Check Python & Executables
     lines.append(f"[+] Python Binary: {sys.executable}")

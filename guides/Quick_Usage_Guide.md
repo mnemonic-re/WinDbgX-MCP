@@ -24,9 +24,26 @@ python scripts/install_mcp.py
 
 ---
 
-## 2. Attaching to a Live User-Mode Target
+## 2. Live GUI Progress Watching (WinDbg GUI Server)
 
-You can attach to any running Windows process using either its **Process ID (PID)** or its **executable name**.
+If you want to watch AI debugging progress live on your desktop inside the graphical **WinDbg GUI** (`WinDbgX` / `DbgX.Shell.exe`):
+
+1. Launch **WinDbg GUI** on desktop and open/attach your target application.
+2. In the WinDbg GUI command bar at the bottom, type:
+   ```text
+   .server tcp:port=5005
+   ```
+3. Connect WinDbgMCP remotely:
+   ```python
+   open_cdb_remote(connection_string="tcp:Port=5005,Server=localhost")
+   ```
+*The AI assistant will drive the debugging session remotely while every step executes live before your eyes in your WinDbg GUI window!*
+
+---
+
+## 3. Attaching to a Live User-Mode Target (Headless)
+
+You can attach headless `cdb.exe` to any running Windows process using either its **Process ID (PID)** or its **executable name**.
 
 ### A. Attach by Process Name
 ```python
@@ -42,7 +59,7 @@ attach_live_process(target="4128")
 
 ---
 
-## 3. Running Basic User-Mode Commands
+## 4. Running Basic User-Mode Commands
 
 Execute standard WinDbg commands on your open user-mode session using `run_cdb_command`:
 
@@ -71,7 +88,7 @@ run_cdb_command(command="dc RSP L64") # Display dwords & symbol previews
 
 ---
 
-## 4. Setting Breakpoints & Execution Control
+## 5. Setting Breakpoints & Execution Control
 
 ### A. Set a Software Breakpoint
 ```python
@@ -92,7 +109,7 @@ run_cdb_command(command="g") # Resume target execution immediately
 
 ---
 
-## 5. Closing the Session
+## 6. Closing the Session
 
 When debugging is complete, release the process handles and detach CDB:
 

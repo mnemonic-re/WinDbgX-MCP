@@ -18,8 +18,8 @@ from typing import List, Optional
 
 from windbg_mcp.filter import sanitize_debug_output
 
-# Regex for CDB/KD prompt lines (e.g. 0:000>, 3: kd>)
-PROMPT_REGEX = re.compile(r"^\d+:.*>\s*$")
+# Regex for CDB/KD prompt lines (e.g. 0:000>, 3: kd>, 0:000:x86>)
+PROMPT_REGEX = re.compile(r"^(?:\[.*\]\s*)?(?:\d+:[^>]*|l?kd)>\s*$")
 
 # Base completion marker string
 MARKER_BASE = "COMMAND_COMPLETED_MARKER"
@@ -97,7 +97,7 @@ class DebugSession:
                 self.output_buffer.append(line)
 
     def _wait_for_initial_prompt(self, timeout_seconds: float) -> str:
-        """Read output until the debugger reaches its first command prompt."""
+        """Read output until the debugger reaches its first command prompt or remote connection banner."""
         start_time = time.time()
         lines: List[str] = []
 
@@ -110,9 +110,9 @@ class DebugSession:
                     lines.extend(self.output_buffer)
                     self.output_buffer.clear()
 
-            # Check if any line matches prompt
+            # Check if any line matches prompt or remote banner
             full_text = "".join(lines)
-            if any(PROMPT_REGEX.search(l) for l in lines[-5:]):
+            if any(PROMPT_REGEX.search(l) for l in lines[-5:]) or any("Connected to server with" in l for l in lines):
                 return sanitize_debug_output(full_text)
 
             time.sleep(0.05)

@@ -4,7 +4,24 @@ This comprehensive guide details the advanced capabilities of **WinDbgMCP**, cov
 
 ---
 
-## 1. Crash Dump Triage (`open_cdb_dump`)
+## 1. Live GUI Progress Watching (WinDbg GUI Server)
+
+If you want to watch AI debugging progress live on your desktop inside the graphical **WinDbg GUI** (`WinDbgX` / `DbgX.Shell.exe`):
+
+1. Launch **WinDbg GUI** on desktop and open/attach your target application.
+2. In the WinDbg GUI command bar at the bottom, type:
+   ```text
+   .server tcp:port=5005
+   ```
+3. Connect WinDbgMCP remotely:
+   ```python
+   open_cdb_remote(connection_string="tcp:Port=5005,Server=localhost")
+   ```
+*The AI assistant will drive the debugging session remotely while every step executes live before your eyes in your WinDbg GUI window!*
+
+---
+
+## 2. Crash Dump Triage (`open_cdb_dump`)
 
 WinDbgMCP automates initial crash dump triage for `.dmp`, `.mdmp`, and `.hdmp` files.
 
@@ -27,7 +44,7 @@ open_cdb_dump(
 
 ---
 
-## 2. Remote User-Mode Debugging (`open_cdb_remote`)
+## 3. Remote User-Mode Debugging (`open_cdb_remote`)
 
 Attach a CDB debugger client to a remote user-mode debug server (`-remote`):
 
@@ -43,7 +60,7 @@ open_cdb_remote(connection_string="npipe:Pipe=WinDbgPipe,Server=DESKTOP-ABC")
 
 ---
 
-## 3. Kernel-Mode Debugging (`open_kd_session`)
+## 4. Kernel-Mode Debugging (`open_kd_session`)
 
 WinDbgMCP connects directly to Windows kernel targets over KDNET, VM named pipes, or serial COM ports using `kd.exe`.
 
@@ -69,7 +86,7 @@ run_kd_command(command="vertarget")    # Display kernel OS version banner
 
 ---
 
-## 4. Multi-Session Orchestration
+## 5. Multi-Session Orchestration
 
 Debug multiple user-mode applications and kernel drivers simultaneously within a single server instance.
 
@@ -86,7 +103,7 @@ switch_session(session_id="kd-net-50000")
 
 ---
 
-## 5. Async Execution Control & Resynchronization
+## 6. Async Execution Control & Resynchronization
 
 When a target is running (`g`), WinDbgMCP provides non-blocking controls to resynchronize or await stop events.
 
@@ -104,7 +121,7 @@ wait_for_break(timeout_seconds=120.0)
 
 ---
 
-## 6. Google Antigravity Visual Artifact Tools
+## 7. Google Antigravity Visual Artifact Tools
 
 Generate native visual markdown diagrams and memory table artifacts for **Google Antigravity**.
 
@@ -128,7 +145,7 @@ dump_rwx_payload(address="0x0000021b00000000", length=4096, output_filename="unp
 
 ---
 
-## 7. Multi-Client Configuration Adapters (`configs/`)
+## 8. Multi-Client Configuration Adapters (`configs/`)
 
 WinDbgMCP supports all major AI client platforms via pre-configured JSON manifests in `configs/`:
 
@@ -142,7 +159,7 @@ WinDbgMCP supports all major AI client platforms via pre-configured JSON manifes
 
 ---
 
-## 8. Transport Modes (`stdio` vs `sse`)
+## 9. Transport Modes (`stdio` vs `sse`)
 
 - **Stdio Mode (IPC Default)**:
   ```bash
@@ -155,7 +172,7 @@ WinDbgMCP supports all major AI client platforms via pre-configured JSON manifes
 
 ---
 
-## 9. Automated Bootstrap Installation
+## 10. Automated Bootstrap Installation
 
 Automate environment discovery, symbol directory setup, and AI client registration with one command:
 

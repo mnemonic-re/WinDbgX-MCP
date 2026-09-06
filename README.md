@@ -17,6 +17,23 @@ python scripts/install_mcp.py
 
 ---
 
+## Live GUI Progress Watching (WinDbg GUI Server)
+
+If you want to watch AI debugging progress live on your desktop inside the graphical **WinDbg GUI** (`WinDbgX` / `DbgX.Shell.exe`):
+
+1. Launch **WinDbg GUI** on desktop, open your target executable or attach to your process.
+2. In the WinDbg GUI command bar at the bottom, type:
+   ```text
+   .server tcp:port=5005
+   ```
+3. Ask your AI assistant to connect:
+   ```python
+   open_cdb_remote(connection_string="tcp:Port=5005,Server=localhost")
+   ```
+*The AI assistant will drive the session remotely while every step executes live before your eyes in your WinDbg GUI window!*
+
+---
+
 ## Transport Modes: `stdio` (IPC) vs `sse` (Network HTTP)
 
 WinDbgMCP supports two transport protocols:
