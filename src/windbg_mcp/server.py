@@ -8,6 +8,8 @@ import os
 import re
 import signal
 import sys
+import time
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from mcp.server.fastmcp import FastMCP, Context
@@ -219,24 +221,95 @@ def annotate_session(
     return session.annotate_session(milestone, category=category)
 
 
+def _get_analysis_dir(target_name: str) -> tuple[Path, str]:
+    """Helper to resolve root/analysis/FILE_NAME/mds directory structure."""
+    clean_name = re.sub(r"[^\w\.-]", "_", target_name.strip())
+    clean_base = clean_name.rsplit(".", 1)[0] if "." in clean_name and not clean_name.startswith(".") else clean_name
+    if not clean_base:
+        clean_base = "general"
+
+    analysis_dir = Path(os.getcwd()) / "analysis" / clean_base / "mds"
+    analysis_dir.mkdir(parents=True, exist_ok=True)
+    return analysis_dir, clean_base
+
+
+@mcp.tool()
+def update_scratchpad(
+    target_name: str,
+    section_title: str,
+    content: str,
+) -> str:
+    """[Antigravity Artifact] Append live analysis notes, register state, and command intent to root/analysis/FILE_NAME/mds/scratchpad.md."""
+    analysis_dir, clean_base = _get_analysis_dir(target_name)
+    scratchpad_path = analysis_dir / "scratchpad.md"
+
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    formatted_entry = f"\n\n---\n\n### [{section_title}] - {timestamp}\n\n{content.strip()}\n"
+
+    if not scratchpad_path.exists():
+        header = f"# Debugging Scratchpad: {clean_base}\n\nLive execution log & incremental reverse-engineering notes.\n"
+        with open(scratchpad_path, "w", encoding="utf-8") as f:
+            f.write(header)
+
+    with open(scratchpad_path, "a", encoding="utf-8") as f:
+        f.write(formatted_entry)
+
+    return f"Updated live scratchpad at '{scratchpad_path}' with section '{section_title}'."
+
+
+@mcp.tool()
+def generate_final_report(
+    target_name: str,
+    executive_summary: str,
+    key_findings: Optional[List[str]] = None,
+) -> str:
+    """[Antigravity Artifact] Synthesize live scratchpad entries into a publication-grade final report at root/analysis/FILE_NAME/mds/FILE_NAME_Final_Report.md."""
+    analysis_dir, clean_base = _get_analysis_dir(target_name)
+    scratchpad_path = analysis_dir / "scratchpad.md"
+    report_filename = f"{clean_base}_Final_Report.md"
+    report_path = analysis_dir / report_filename
+
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+    raw_scratchpad = ""
+    if scratchpad_path.exists():
+        with open(scratchpad_path, "r", encoding="utf-8") as f:
+            raw_scratchpad = f.read()
+
+    findings_block = ""
+    if key_findings:
+        findings_items = "\n".join(f"- {f}" for f in key_findings)
+        findings_block = f"## 2. Key Findings & Technical Evidence\n\n{findings_items}\n\n"
+    elif not raw_scratchpad:
+        findings_block = "## 2. Key Findings & Technical Evidence\n\n- Dynamic analysis completed.\n\n"
+
+    report_content = (
+        f"# {clean_base} - Technical Analysis Final Report\n\n"
+        f"**Target Binary/Driver**: `{clean_base}`  \n"
+        f"**Report Generated**: `{timestamp}`  \n\n"
+        f"## 1. Executive Summary\n\n{executive_summary.strip()}\n\n"
+        f"{findings_block}"
+        f"## 3. Dynamic Debugging & Reverse-Engineering Trace Log\n\n"
+        f"{raw_scratchpad if raw_scratchpad else '*No scratchpad entries recorded.*'}\n\n"
+        f"---\n"
+        f"*Report synthesized automatically by WinDbgMCP.*"
+    )
+
+    with open(report_path, "w", encoding="utf-8") as f:
+        f.write(report_content)
+
+    return f"Generated final analysis report at '{report_path}'."
+
+
 @mcp.tool()
 def update_analysis_report(
     section_title: str,
     content: str,
     report_filename: str = "analysis_report.md",
+    target_name: str = "general",
 ) -> str:
-    """[Antigravity Artifact] Append or update a structured technical analysis report section on disk for continuous debugging writeups."""
-    reports_dir = os.path.join(os.getcwd(), "reports")
-    os.makedirs(reports_dir, exist_ok=True)
-    target_path = os.path.join(reports_dir, report_filename)
-
-    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    formatted_section = f"\n\n---\n\n### {section_title} [{timestamp}]\n\n{content.strip()}\n"
-
-    with open(target_path, "a", encoding="utf-8") as f:
-        f.write(formatted_section)
-
-    return f"Updated analysis report at '{target_path}' with section '{section_title}'."
+    """[Antigravity Artifact] Append technical analysis section to target scratchpad log at root/analysis/FILE_NAME/mds/scratchpad.md."""
+    return update_scratchpad(target_name=target_name, section_title=section_title, content=content)
 
 
 @mcp.tool()

@@ -9,6 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 from windbg_mcp.bootstrap import (
     ensure_symbol_directory,
     find_debugext_dll,
+    find_python_executable,
     build_mcp_server_config,
 )
 
@@ -20,6 +21,12 @@ class TestBootstrapEngine(unittest.TestCase):
         """Test symbol directory format generation."""
         sym_str = ensure_symbol_directory()
         self.assertIn("srv*C:\\Symbols*", sym_str)
+
+    def test_find_python_executable(self):
+        """Test Python 3.11-3.14 discovery engine."""
+        py_path = find_python_executable()
+        self.assertTrue(os.path.exists(py_path))
+        self.assertTrue(py_path.lower().endswith("python.exe"))
 
     def test_build_mcp_server_config(self):
         """Test building server JSON configuration dictionary."""

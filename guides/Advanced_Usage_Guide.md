@@ -50,12 +50,12 @@ Attach a CDB debugger client to a remote user-mode debug server (`-remote`):
 
 ### A. Connect via TCP
 ```python
-open_cdb_remote(connection_string="tcp:Port=5005,Server=192.168.1.50")
+open_cdb_remote(connection_string="tcp:Port=5005,Server=<TARGET_IP_OR_LOCALHOST>")
 ```
 
 ### B. Connect via Named Pipe
 ```python
-open_cdb_remote(connection_string="npipe:Pipe=WinDbgPipe,Server=DESKTOP-ABC")
+open_cdb_remote(connection_string="npipe:Pipe=WinDbgPipe,Server=<TARGET_HOSTNAME>")
 ```
 
 ---

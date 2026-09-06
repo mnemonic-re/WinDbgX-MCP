@@ -8,7 +8,7 @@
       ],
       "env": {
         "_NT_SYMBOL_PATH": "srv*C:\\Symbols*https://msdl.microsoft.com/download/symbols",
-        "_NT_DEBUGGER_EXTENSION_PATH": "C:\\Users\\DEV\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\x64\\Release;C:\\Users\\DEV\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\Release"
+        "_NT_DEBUGGER_EXTENSION_PATH": "%USERPROFILE%\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\x64\\Release;%USERPROFILE%\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\Release"
       }
     }
   }

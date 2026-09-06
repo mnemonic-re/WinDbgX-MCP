@@ -24,7 +24,7 @@ class TestSanitizeDebugOutput(unittest.TestCase):
 
     def test_sanitize_paths(self):
         """Test redacting sensitive user directory paths while keeping standard paths."""
-        user_path = r"C:\Users\JohnDoe\AppData\Local\Temp\secret.txt"
+        user_path = r"C:\Users\SampleUser\AppData\Local\Temp\secret.txt"
         filtered = sanitize_debug_output(user_path)
         self.assertIn(r"C:\Users\[REDACTED_USER]", filtered)
 

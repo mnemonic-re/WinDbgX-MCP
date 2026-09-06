@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 from typing import Dict, Any, List
@@ -28,24 +29,78 @@ def ensure_symbol_directory() -> str:
 
 
 def find_debugext_dll() -> List[str]:
-    """Search for built de.dll (DebugExt) binaries in workspace."""
-    base_dir = Path(r"C:\Users\DEV\source\repos\WinDbgX\DebugExt")
+    """Search for built de.dll (DebugExt) binaries dynamically in workspace and user source trees."""
+    workspace_root = Path(__file__).resolve().parent.parent.parent
+    parent_dir = workspace_root.parent
+    user_home = Path.home()
+
     candidates = [
-        str(base_dir / "DebugExt" / "x64" / "Release"),
-        str(base_dir / "DebugExt" / "Release"),
-        str(base_dir / "x64" / "Release"),
+        str(workspace_root / "binaries" / "extensions"),
+        str(parent_dir / "DebugExt" / "DebugExt" / "x64" / "Release"),
+        str(parent_dir / "DebugExt" / "DebugExt" / "Release"),
+        str(parent_dir / "DebugExt" / "x64" / "Release"),
+        str(user_home / "source" / "repos" / "WinDbgX" / "DebugExt" / "DebugExt" / "x64" / "Release"),
+        str(user_home / "source" / "repos" / "DebugExt" / "x64" / "Release"),
     ]
     existing = [c for c in candidates if os.path.exists(c)]
     return existing if existing else candidates[:1]
 
 
-def build_mcp_server_config() -> Dict[str, Any]:
+def find_python_executable() -> str:
+    """Discover Python installations across versions 3.11 through 3.14 using dynamic Windows environment resolution."""
+    candidates = []
+
+    # Current running interpreter
+    if sys.executable and os.path.exists(sys.executable):
+        candidates.append(sys.executable)
+
+    # Dynamic Windows environment paths
+    system_drive = os.environ.get("SystemDrive", "C:")
+    user_home = Path.home()
+    local_appdata = os.environ.get("LOCALAPPDATA") or str(user_home / "AppData" / "Local")
+    program_files = os.environ.get("ProgramFiles") or f"{system_drive}\\Program Files"
+    program_files_x86 = os.environ.get("ProgramFiles(x86)") or f"{system_drive}\\Program Files (x86)"
+
+    # Custom & default Windows root paths (C:\Python311, C:\Python11, etc.)
+    versions = ["311", "312", "313", "314", "11", "12", "13", "14"]
+    for v in versions:
+        candidates.append(f"{system_drive}\\Python{v}\\python.exe")
+
+    for v in versions:
+        candidates.append(os.path.join(local_appdata, "Programs", "Python", f"Python{v}", "python.exe"))
+        candidates.append(os.path.join(program_files, f"Python{v}", "python.exe"))
+        candidates.append(os.path.join(program_files_x86, f"Python{v}", "python.exe"))
+
+    # System PATH lookups
+    which_python = shutil.which("python")
+    if which_python:
+        candidates.append(which_python)
+    which_python3 = shutil.which("python3")
+    if which_python3:
+        candidates.append(which_python3)
+
+    # Filter existing files
+    existing = []
+    seen = set()
+    for path in candidates:
+        if path and os.path.isfile(path) and path.lower() not in seen:
+            seen.add(path.lower())
+            existing.append(path)
+
+    if existing:
+        return existing[0]
+
+    return sys.executable
+
+
+def build_mcp_server_config(python_bin: Optional[str] = None) -> Dict[str, Any]:
     """Build standardized MCP server JSON definition."""
     symbol_path = ensure_symbol_directory()
     de_paths = ";".join(find_debugext_dll())
+    py_exec = python_bin or find_python_executable()
 
     return {
-        "command": sys.executable,
+        "command": py_exec,
         "args": ["-m", "windbg_mcp"],
         "env": {
             "_NT_SYMBOL_PATH": symbol_path,
@@ -104,7 +159,8 @@ def run_bootstrap() -> str:
     ]
 
     # 1. Check Python & Executables
-    lines.append(f"[+] Python Binary: {sys.executable}")
+    py_bin = find_python_executable()
+    lines.append(f"[+] Python Binary: {py_bin}")
     cdb_bin = find_cdb_executable()
     kd_bin = find_kd_executable()
     lines.append(f"[+] CDB Binary: {cdb_bin}")

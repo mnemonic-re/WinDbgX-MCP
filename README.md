@@ -95,6 +95,9 @@ WinDbgMCP ships with ready-to-use configuration files under `configs/`:
 - **OpenAI & OpenAI-Compatible (OpenRouter, vLLM, LiteLLM)**: `configs/openai_agents.json`
 - **Local LLMs (Ollama, LM Studio, Jan, LocalAI)**: `configs/local_ollama_lmstudio.json`
 
+> [!NOTE]
+> **Machine-Independent Path Resolution**: WinDbgMCP automatically resolves all environment paths (`_NT_SYMBOL_PATH`, `_NT_DEBUGGER_EXTENSION_PATH`, Python binaries) dynamically using Windows environment variables (`%USERPROFILE%`, `%LOCALAPPDATA%`, `%SystemDrive%`, `%ProgramFiles%`) without hardcoding personal user directory names or hostnames.
+
 ---
 
 ## Tool Reference Catalog
@@ -117,7 +120,8 @@ WinDbgMCP ships with ready-to-use configuration files under `configs/`:
 | `render_control_flow_graph`| Visual | Build native Mermaid CFG diagram (`graph TD`) for Antigravity artifacts |
 | `dump_memory_visual` | Visual | Format memory bytes in clean hex/ASCII markdown tables |
 | `dump_rwx_payload` | Visual | Dump unpacked memory regions/shellcode to disk files |
-| `update_analysis_report` | Visual | Append/update continuous technical analysis markdown report on disk |
+| `update_scratchpad` | Reporting | Append live notes/traces to `analysis/<FILE_NAME>/mds/scratchpad.md` |
+| `generate_final_report`| Reporting | Synthesize scratchpad into `analysis/<FILE_NAME>/mds/<FILE_NAME>_Final_Report.md` |
 | `inspect_function_args`| DebugExt | Inspect live fastcall/stdcall parameters & string/symbol previews |
 | `scan_string_references`| DebugExt | Scan module code/data for ASCII and UTF-16 strings (`strref`) |
 | `find_code_xrefs` | DebugExt | Locate code references (`CALL`, `JMP`, `RIP-rel`) to target address |
