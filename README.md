@@ -17,6 +17,25 @@ python scripts/install_mcp.py
 
 ---
 
+## Transport Modes: `stdio` (IPC) vs `sse` (Network HTTP)
+
+WinDbgMCP supports two transport protocols:
+
+1. **Stdio Mode (Default)**:
+   - Launched automatically by desktop AI clients (Antigravity, Claude, Cursor) as a local background process via stdin/stdout.
+   - Zero network overhead, zero firewall prompts, 100% local IPC.
+   ```bash
+   python -m windbg_mcp
+   ```
+
+2. **SSE HTTP Network Mode (`--sse`)**:
+   - Spins up a web server listening on a TCP port (e.g. `8000`) for remote debugging, web-based LLM apps, or cross-machine AI execution.
+   ```bash
+   python -m windbg_mcp --sse --port 8000
+   ```
+
+---
+
 ## Capabilities Overview
 
 - **Unrestricted WinDbg Command Passthrough**:

@@ -4,13 +4,23 @@ This guide provides a straightforward, step-by-step walkthrough for using **WinD
 
 ---
 
-## 1. Fast Setup
+## 1. Fast Setup & Transport Modes
 
-Before starting, ensure `WinDbgMCP` is registered in your AI client configuration (`mcp.json`). You can automate environment setup and registration by running:
+Before starting, ensure `WinDbgMCP` is registered in your AI client configuration (`mcp.json`). Automate environment setup and registration by running:
 
 ```bash
 python scripts/install_mcp.py
 ```
+
+### Transport Options:
+- **Stdio Mode (Default)**: Spawns automatically via stdin/stdout for local AI apps (Antigravity, Claude, Cursor):
+  ```bash
+  python -m windbg_mcp
+  ```
+- **SSE Network Mode**: Runs an HTTP server on port 8000 for web/remote AI apps:
+  ```bash
+  python -m windbg_mcp --sse --port 8000
+  ```
 
 ---
 

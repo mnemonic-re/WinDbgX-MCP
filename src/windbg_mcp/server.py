@@ -403,9 +403,13 @@ def windbg_doctor() -> str:
 # Main entry point for standalone server launch
 # -----------------------------------------------------------------------------
 
-def run_server():
-    """Run the FastMCP server on stdio."""
-    mcp.run()
+def run_server(transport: str = "stdio", host: str = "0.0.0.0", port: int = 8000):
+    """Run the FastMCP server on stdio or sse transport."""
+    if transport.lower() == "sse":
+        print(f"[*] Starting WinDbgMCP on SSE HTTP transport ({host}:{port})...")
+        mcp.run(transport="sse", host=host, port=port)
+    else:
+        mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

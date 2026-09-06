@@ -142,7 +142,20 @@ WinDbgMCP supports all major AI client platforms via pre-configured JSON manifes
 
 ---
 
-## 8. Automated Bootstrap Installation
+## 8. Transport Modes (`stdio` vs `sse`)
+
+- **Stdio Mode (IPC Default)**:
+  ```bash
+  python -m windbg_mcp
+  ```
+- **SSE HTTP Network Mode**:
+  ```bash
+  python -m windbg_mcp --sse --port 8000
+  ```
+
+---
+
+## 9. Automated Bootstrap Installation
 
 Automate environment discovery, symbol directory setup, and AI client registration with one command:
 
