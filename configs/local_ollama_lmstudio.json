@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "windbg-mcp": {
+      "command": "python",
+      "args": [
+        "-m",
+        "windbg_mcp"
+      ],
+      "env": {
+        "_NT_SYMBOL_PATH": "srv*C:\\Symbols*https://msdl.microsoft.com/download/symbols",
+        "_NT_DEBUGGER_EXTENSION_PATH": "C:\\Users\\DEV\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\x64\\Release;C:\\Users\\DEV\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\Release"
+      }
+    }
+  },
+  "notes": "Compatible with Local LLM runners (Ollama, LM Studio, Jan, LocalAI, Open WebUI) using mcphost or mcp-bridge."
+}

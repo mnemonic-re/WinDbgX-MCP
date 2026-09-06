@@ -1,0 +1,68 @@
+# WinDbgMCP .gitignore
+
+# Tasks directory & internal planning logs
+tasks/
+
+# Binaries directory contents (preserve directory structure via .gitkeep)
+binaries/*
+!binaries/.gitkeep
+!binaries/extensions/
+!binaries/extensions/.gitkeep
+
+# Python byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+
+# Testing & coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.nox/
+.hypothesis/
+
+# Crash dumps & log artifacts
+*.dmp
+*.mdmp
+*.hdmp
+*.log
+*.tmp
+
+# IDEs, Editors & OS Files
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosv
+*.sln.docstates
+.DS_Store
+Thumbs.db
