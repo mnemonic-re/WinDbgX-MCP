@@ -56,6 +56,12 @@ htmlcov/
 *.log
 *.tmp
 
+# Custom examples, local test suites, reports & scratchpads
+examples/
+tests/
+reports/
+analysis/
+
 # IDEs, Editors & OS Files
 .vs/
 .idea/

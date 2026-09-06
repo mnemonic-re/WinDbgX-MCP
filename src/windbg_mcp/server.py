@@ -536,8 +536,21 @@ def windbg_doctor() -> str:
 # Main entry point for standalone server launch
 # -----------------------------------------------------------------------------
 
-def run_server(transport: str = "stdio", host: str = "0.0.0.0", port: int = 8000):
-    """Run the FastMCP server on stdio or sse transport."""
+def run_server(
+    transport: str = "stdio",
+    host: str = "0.0.0.0",
+    port: int = 8000,
+    custom_hook_path: Optional[str] = None,
+):
+    """Run the FastMCP server on stdio or sse transport with optional custom hook."""
+    if custom_hook_path:
+        from windbg_mcp.custom_hook import load_custom_hook
+        try:
+            loaded = load_custom_hook(custom_hook_path)
+            print(f"[*] Loaded custom hook from '{loaded.path}'")
+        except Exception as e:
+            print(f"[!] Failed to load custom hook: {e}")
+
     if transport.lower() == "sse":
         print(f"[*] Starting WinDbgMCP on SSE HTTP transport ({host}:{port})...")
         mcp.run(transport="sse", host=host, port=port)

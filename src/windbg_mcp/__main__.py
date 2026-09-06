@@ -30,11 +30,22 @@ def main():
         default=8000,
         help="Port for SSE server (default: 8000)",
     )
+    parser.add_argument(
+        "--custom-hook",
+        type=str,
+        default=None,
+        help="Path to external Python script defining custom process_input / process_output hook callbacks",
+    )
 
     args = parser.parse_args()
 
     transport_mode = "sse" if args.sse else args.transport
-    run_server(transport=transport_mode, host=args.host, port=args.port)
+    run_server(
+        transport=transport_mode,
+        host=args.host,
+        port=args.port,
+        custom_hook_path=args.custom_hook,
+    )
 
 
 if __name__ == "__main__":
