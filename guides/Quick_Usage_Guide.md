@@ -24,7 +24,7 @@ python scripts/install_mcp.py
 
 ---
 
-## 2. Live GUI Progress Watching (WinDbg GUI Server)
+## 2. Live GUI Progress Watching & AI Intent Streaming
 
 If you want to watch AI debugging progress live on your desktop inside the graphical **WinDbg GUI** (`WinDbgX` / `DbgX.Shell.exe`):
 
@@ -37,7 +37,10 @@ If you want to watch AI debugging progress live on your desktop inside the graph
    ```python
    open_cdb_remote(connection_string="tcp:Port=5005,Server=localhost")
    ```
-*The AI assistant will drive the debugging session remotely while every step executes live before your eyes in your WinDbg GUI window!*
+4. **Live AI Intent**: All execution tools accept a `reasoning` parameter, streaming `=== [AI INTENT]: <reasoning> ===` banners live into the WinDbg command log before running commands.
+5. **Milestone Banners**: The AI can drop high-visibility double-bordered block banners into WinDbg GUI using `annotate_session(milestone="...")` for phase shifts.
+
+*The AI assistant will drive the debugging session remotely while every step and reasoning banner executes live before your eyes in your WinDbg GUI window!*
 
 ---
 

@@ -17,7 +17,7 @@ python scripts/install_mcp.py
 
 ---
 
-## Live GUI Progress Watching (WinDbg GUI Server)
+## Live GUI Progress Watching & AI Intent Streaming
 
 If you want to watch AI debugging progress live on your desktop inside the graphical **WinDbg GUI** (`WinDbgX` / `DbgX.Shell.exe`):
 
@@ -30,7 +30,10 @@ If you want to watch AI debugging progress live on your desktop inside the graph
    ```python
    open_cdb_remote(connection_string="tcp:Port=5005,Server=localhost")
    ```
-*The AI assistant will drive the session remotely while every step executes live before your eyes in your WinDbg GUI window!*
+4. **Live AI Intent Streaming**: MCP execution tools support an optional `reasoning` parameter. When passed, WinDbgMCP streams `=== [AI INTENT]: <reasoning> ===` banners live into the WinDbg console right before command execution.
+5. **Milestone Banners**: The AI can write prominent double-bordered block banners into WinDbg GUI using `annotate_session(milestone="...")` for major phase shifts.
+
+*The AI assistant will drive the session remotely while every step and reasoning banner executes live before your eyes in your WinDbg GUI window!*
 
 ---
 
@@ -108,6 +111,7 @@ WinDbgMCP ships with ready-to-use configuration files under `configs/`:
 | `close_session` | Session | Safely close debugging session (supports `resume=true` for kernel) |
 | `run_cdb_command` | Execution | Execute ANY user-mode command (`k`, `r`, `u`, `dt`, `!heap`, etc.) |
 | `run_kd_command` | Execution | Execute ANY kernel-mode command (`!process 0 0`, `!thread`, `vertarget`) |
+| `annotate_session` | Execution | Write prominent milestone/reasoning block banners into WinDbg GUI |
 | `send_ctrl_break` | Execution | Interrupt running target & resynchronize debugger prompt |
 | `wait_for_break` | Execution | Asynchronously block until target halts on a breakpoint or exception |
 | `render_control_flow_graph`| Visual | Build native Mermaid CFG diagram (`graph TD`) for Antigravity artifacts |

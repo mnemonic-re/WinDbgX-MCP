@@ -126,7 +126,18 @@ class DebugSession:
         except Exception:
             pass  # Silent fallback if de.dll is not in search path
 
-    def run_command(self, command: str, timeout_seconds: float = 60.0) -> str:
+    def annotate_session(self, milestone: str, category: str = "MILESTONE") -> str:
+        """Inject a prominent visual banner into the WinDbg GUI output window."""
+        clean = milestone.strip().replace("\n", " ")
+        cat = category.strip().upper()
+        banner_cmd = (
+            f".echo ================================================================================\n"
+            f".echo [AI {cat}]: {clean}\n"
+            f".echo ================================================================================"
+        )
+        return self.run_command(banner_cmd)
+
+    def run_command(self, command: str, timeout_seconds: float = 60.0, reasoning: Optional[str] = None) -> str:
         """Execute a WinDbg command and return its full output."""
         if self.closed or not self.process or self.process.poll() is not None:
             raise DebuggerError(f"Session '{self.session_id}' is closed or debugger process died.")
@@ -135,14 +146,27 @@ class DebugSession:
 
         # Check if this is an execution resume command (e.g. 'g')
         if self._is_resume_command(clean_cmd):
+            if reasoning:
+                clean_reasoning = reasoning.strip().replace("\n", " ")
+                try:
+                    if self.process and self.process.stdin:
+                        self.process.stdin.write(f".echo === [AI INTENT]: {clean_reasoning} ===\n")
+                        self.process.stdin.flush()
+                except Exception:
+                    pass
             return self._run_resume_command(clean_cmd)
 
         self.sequence_number += 1
         seq_id = self.sequence_number
         marker = f"{MARKER_BASE}_{seq_id}"
 
-        # Send command followed by echo marker
-        full_payload = f"{clean_cmd}\n.echo {marker}\n"
+        # Build payload with optional AI INTENT echo banner
+        full_payload = ""
+        if reasoning:
+            clean_reasoning = reasoning.strip().replace("\n", " ")
+            full_payload += f".echo === [AI INTENT]: {clean_reasoning} ===\n"
+
+        full_payload += f"{clean_cmd}\n.echo {marker}\n"
 
         with self.lock:
             self.output_buffer.clear()

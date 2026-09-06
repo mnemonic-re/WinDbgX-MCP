@@ -209,17 +209,38 @@ def close_session(session_id: Optional[str] = None, resume_kernel: bool = True) 
 # -----------------------------------------------------------------------------
 
 @mcp.tool()
-def run_cdb_command(command: str, session_id: Optional[str] = None, timeout_seconds: float = 60.0) -> str:
-    """Run any WinDbg user-mode command on an open cdb session (e.g., 'kb', 'lm', '!heap')."""
+def annotate_session(
+    milestone: str,
+    category: str = "MILESTONE",
+    session_id: Optional[str] = None,
+) -> str:
+    """[Antigravity Visual] Write a prominent milestone or reasoning banner directly into the live WinDbg GUI output window."""
     session = get_session(session_id)
-    return session.run_command(command, timeout_seconds=timeout_seconds)
+    return session.annotate_session(milestone, category=category)
 
 
 @mcp.tool()
-def run_kd_command(command: str, session_id: Optional[str] = None, timeout_seconds: float = 120.0) -> str:
-    """Run any command on an open kernel-mode (kd) session (e.g., '!process 0 0', '!thread')."""
+def run_cdb_command(
+    command: str,
+    reasoning: Optional[str] = None,
+    session_id: Optional[str] = None,
+    timeout_seconds: float = 60.0,
+) -> str:
+    """Run any WinDbg user-mode command on an open cdb session (e.g., 'kb', 'lm', '!heap'). Pass reasoning to display intent live in WinDbg GUI."""
     session = get_session(session_id)
-    return session.run_command(command, timeout_seconds=timeout_seconds)
+    return session.run_command(command, timeout_seconds=timeout_seconds, reasoning=reasoning)
+
+
+@mcp.tool()
+def run_kd_command(
+    command: str,
+    reasoning: Optional[str] = None,
+    session_id: Optional[str] = None,
+    timeout_seconds: float = 120.0,
+) -> str:
+    """Run any command on an open kernel-mode (kd) session (e.g., '!process 0 0', '!thread'). Pass reasoning to display intent live in WinDbg GUI."""
+    session = get_session(session_id)
+    return session.run_command(command, timeout_seconds=timeout_seconds, reasoning=reasoning)
 
 
 @mcp.tool()
@@ -244,11 +265,12 @@ def wait_for_break(session_id: Optional[str] = None, timeout_seconds: float = 30
 def render_control_flow_graph(
     target_address_or_symbol: str,
     instruction_count: int = 50,
+    reasoning: Optional[str] = None,
     session_id: Optional[str] = None,
 ) -> str:
     """[Antigravity Visual] Disassemble target routine and build a native Mermaid flowchart (graph TD) for artifact rendering."""
     session = get_session(session_id)
-    raw_disasm = session.run_command(f"u {target_address_or_symbol} L{instruction_count}")
+    raw_disasm = session.run_command(f"u {target_address_or_symbol} L{instruction_count}", reasoning=reasoning)
     mermaid_cfg = build_cfg_mermaid(raw_disasm, title=f"CFG: {target_address_or_symbol}")
 
     return f"### Control Flow Graph for {target_address_or_symbol}\n\n{mermaid_cfg}\n\n### Raw Disassembly\n```assembly\n{raw_disasm}\n```"
@@ -258,11 +280,12 @@ def render_control_flow_graph(
 def dump_memory_visual(
     address: str,
     length: int = 128,
+    reasoning: Optional[str] = None,
     session_id: Optional[str] = None,
 ) -> str:
     """[Antigravity Visual] Display formatted memory bytes with hex, ASCII, and symbol labels in a clean table."""
     session = get_session(session_id)
-    raw_db = session.run_command(f"db {address} L{length}")
+    raw_db = session.run_command(f"db {address} L{length}", reasoning=reasoning)
     raw_dc = session.run_command(f"dc {address} L{length}")
 
     return f"### Memory Dump: {address} ({length} bytes)\n\n#### Hex & ASCII (`db`)\n```text\n{raw_db}\n```\n\n#### Dword & Symbol Preview (`dc`)\n```text\n{raw_dc}\n```"
@@ -273,47 +296,59 @@ def dump_rwx_payload(
     address: str,
     length: int,
     output_filename: str,
+    reasoning: Optional[str] = None,
     session_id: Optional[str] = None,
 ) -> str:
     """[Antigravity Artifact] Write raw memory buffer (shellcode/unpacked binary) to a local file for offline malware analysis."""
     session = get_session(session_id)
     cmd = f".writemem {output_filename} {address} L?{length}"
-    result = session.run_command(cmd)
+    result = session.run_command(cmd, reasoning=reasoning)
     return f"Wrote memory region [{address} -> +0x{length:X}] to '{output_filename}'. Output:\n{result}"
 
 
 @mcp.tool()
-def inspect_function_args(target: Optional[str] = None, session_id: Optional[str] = None) -> str:
+def inspect_function_args(target: Optional[str] = None, reasoning: Optional[str] = None, session_id: Optional[str] = None) -> str:
     """[DebugExt] Inspect live function calling convention parameters (args/params) with string/symbol previews."""
     session = get_session(session_id)
     cmd = f"args {target}" if target else "args"
-    return session.run_command(cmd)
+    return session.run_command(cmd, reasoning=reasoning)
 
 
 @mcp.tool()
-def scan_string_references(module_name: str, session_id: Optional[str] = None) -> str:
+def scan_string_references(module_name: str, reasoning: Optional[str] = None, session_id: Optional[str] = None) -> str:
     """[DebugExt] Scan module code/data sections for ASCII and UTF-16 string references (strref)."""
     session = get_session(session_id)
-    return session.run_command(f"strref {module_name}")
+    return session.run_command(f"strref {module_name}", reasoning=reasoning)
 
 
 @mcp.tool()
-def find_code_xrefs(target_address_or_symbol: str, module_name: Optional[str] = None, session_id: Optional[str] = None) -> str:
+def find_code_xrefs(
+    target_address_or_symbol: str,
+    module_name: Optional[str] = None,
+    reasoning: Optional[str] = None,
+    session_id: Optional[str] = None,
+) -> str:
     """[DebugExt] Locate code cross-references (CALL, JMP, RIP-relative) to target address/symbol (xrefs)."""
     session = get_session(session_id)
     cmd = f"xrefs {target_address_or_symbol} {module_name}" if module_name else f"xrefs {target_address_or_symbol}"
-    return session.run_command(cmd)
+    return session.run_command(cmd, reasoning=reasoning)
 
 
 @mcp.tool()
-def audit_memory_regions(session_id: Optional[str] = None) -> str:
+def audit_memory_regions(reasoning: Optional[str] = None, session_id: Optional[str] = None) -> str:
     """[DebugExt] Audit virtual memory protection states and highlight dangerous PAGE_EXECUTE_READWRITE (RWX) pages (memmap)."""
     session = get_session(session_id)
-    return session.run_command("memmap")
+    return session.run_command("memmap", reasoning=reasoning)
 
 
 @mcp.tool()
-def translate_offset(mode: str, arg1: str, arg2: Optional[str] = None, session_id: Optional[str] = None) -> str:
+def translate_offset(
+    mode: str,
+    arg1: str,
+    arg2: Optional[str] = None,
+    reasoning: Optional[str] = None,
+    session_id: Optional[str] = None,
+) -> str:
     """[DebugExt] Perform static (Ghidra/PE-bear) <-> live memory address translations.
 
     Modes:
@@ -331,18 +366,23 @@ def translate_offset(mode: str, arg1: str, arg2: Optional[str] = None, session_i
     else:
         return f"Unknown translation mode '{mode}'. Use 'rva', 'fo2va', or 'va2fo'."
 
-    return session.run_command(cmd)
+    return session.run_command(cmd, reasoning=reasoning)
 
 
 @mcp.tool()
-def generate_signature(address_or_symbol: str, length: int = 32, session_id: Optional[str] = None) -> str:
+def generate_signature(address_or_symbol: str, length: int = 32, reasoning: Optional[str] = None, session_id: Optional[str] = None) -> str:
     """[DebugExt] Generate relocatable AOB signature with wildcards (makesig) or search pattern (findsig)."""
     session = get_session(session_id)
-    return session.run_command(f"makesig {address_or_symbol} {length}")
+    return session.run_command(f"makesig {address_or_symbol} {length}", reasoning=reasoning)
 
 
 @mcp.tool()
-def scan_hooks_and_injections(audit_type: str = "hooks", module_name: Optional[str] = None, session_id: Optional[str] = None) -> str:
+def scan_hooks_and_injections(
+    audit_type: str = "hooks",
+    module_name: Optional[str] = None,
+    reasoning: Optional[str] = None,
+    session_id: Optional[str] = None,
+) -> str:
     """[DebugExt] Scan for inline detours, IAT hooks, driver IRP hooks, shellcode pages, or code caves.
 
     Audit types: 'hooks', 'irphooks', 'injections', 'codecaves'.
@@ -360,15 +400,15 @@ def scan_hooks_and_injections(audit_type: str = "hooks", module_name: Optional[s
     else:
         return f"Unknown audit type '{audit_type}'. Use 'hooks', 'irphooks', 'injections', or 'codecaves'."
 
-    return session.run_command(cmd)
+    return session.run_command(cmd, reasoning=reasoning)
 
 
 @mcp.tool()
-def audit_pe_security(target: Optional[str] = None, session_id: Optional[str] = None) -> str:
+def audit_pe_security(target: Optional[str] = None, reasoning: Optional[str] = None, session_id: Optional[str] = None) -> str:
     """[DebugExt] Audit PE headers, ASLR/DEP/CFG mitigations, PEB anti-debug flags, and TEB stack limits (pe/peb/teb)."""
     session = get_session(session_id)
     cmd = f"pe {target}" if target else "pe"
-    return session.run_command(cmd)
+    return session.run_command(cmd, reasoning=reasoning)
 
 
 # -----------------------------------------------------------------------------

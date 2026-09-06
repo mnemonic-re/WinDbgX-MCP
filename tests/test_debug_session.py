@@ -53,6 +53,18 @@ class TestDebugSession(unittest.TestCase):
         self.assertFalse(session._is_resume_command("k"))
         self.assertFalse(session._is_resume_command("r"))
 
+    def test_annotate_session_formatting(self):
+        """Test formatting of milestone visual banners."""
+        session = DebugSession(session_id="test-3", debugger_type="cdb")
+        # Override run_command to verify string built
+        captured_cmds = []
+        session.run_command = lambda cmd, **kwargs: captured_cmds.append(cmd) or "OK"
+        
+        session.annotate_session("Target routine reached", category="FINDING")
+        self.assertEqual(len(captured_cmds), 1)
+        self.assertIn("[AI FINDING]: Target routine reached", captured_cmds[0])
+        self.assertIn(".echo ===", captured_cmds[0])
+
 
 if __name__ == "__main__":
     unittest.main()
