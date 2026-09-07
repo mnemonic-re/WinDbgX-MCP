@@ -31,6 +31,8 @@ from windbg_mcp.re_superpowers import (
     parse_pe_header_in_memory,
     audit_kernel_integrity_report,
     scan_stack_spoofing_report,
+    find_rop_gadgets_report,
+    audit_heap_corruption_report,
 )
 
 # Initialize FastMCP Server
@@ -434,6 +436,32 @@ def scan_stack_spoofing(
     raw_stack = session.run_command(stack_cmd, reasoning="Inspecting thread callstack for unbacked return addresses and stack spoofing")
     raw_map = session.run_command(memory_map_cmd, reasoning="Fetching virtual memory map for stack frame protection audit") if memory_map_cmd else ""
     return scan_stack_spoofing_report(raw_stack, raw_map)
+
+
+@mcp.tool()
+def find_rop_gadgets(
+    disassemble_cmd: str = "u 0x00401000 L100",
+    target_module: str = "target",
+    session_id: Optional[str] = None,
+) -> str:
+    """[Score 7 Superpower] Scan loaded executable modules for useful ROP gadgets (e.g. pop rcx; ret, mov [rax], rbx; ret, xchg rax, rsp), filtering and categorizing them by register operation."""
+    session = get_session(session_id)
+    raw_disasm = session.run_command(disassemble_cmd, reasoning=f"Scanning disassembly of {target_module} for ROP gadgets ending in ret")
+    return find_rop_gadgets_report(raw_disasm, target_module=target_module)
+
+
+@mcp.tool()
+def audit_heap_corruption(
+    heap_cmd: str = "!heap -p -a",
+    pageheap_cmd: Optional[str] = None,
+    session_id: Optional[str] = None,
+) -> str:
+    """[Score 7 Superpower] Automate WinDbg !heap -p -a and Pageheap diagnostic flags to pinpoint corrupted chunk headers, freed allocation stack traces, and invalid free (UAF) addresses."""
+    session = get_session(session_id)
+    raw_heap = session.run_command(heap_cmd, reasoning="Auditing heap structures for chunk header corruption and allocation traces")
+    raw_pageheap = session.run_command(pageheap_cmd, reasoning="Dumping Pageheap diagnostic fault log") if pageheap_cmd else ""
+    return audit_heap_corruption_report(raw_heap, raw_pageheap)
+
 
 
 

@@ -319,6 +319,8 @@ Examples:
 | | `unpack_dynamic_pe` | Detect, unpack, and dump dynamically loaded/decrypted PE payloads from process memory. |
 | | `audit_kernel_integrity` | Audit kernel EPROCESS lists, SSDT tables, and driver dispatch arrays for DKOM & rootkits. |
 | | `scan_stack_spoofing` | Inspect thread stack frames for unbacked return addresses (pointing to unmapped/RWX memory), alignment anomalies, and fake stack frames. |
+| | `find_rop_gadgets` | Scan loaded executable modules for useful ROP gadgets (e.g. pop rcx; ret, mov [rax], rbx; ret, xchg rax, rsp) categorized by operation. |
+| | `audit_heap_corruption` | Automate !heap -p -a & Pageheap diagnostics to pinpoint corrupted chunk headers, freed allocation traces, and UAF bugs. |
 | **Auxiliary & Extensions** | `load_extension` | Load external WinDbg extensions (`.load`). |
 | | `execute_script` | Run debugger engine scripts. |
 | | `search_symbols` | Search module symbol tables (`x`). |

@@ -255,4 +255,31 @@ scan_stack_spoofing(
 )
 ```
 
+---
+
+## 13. 🎯 Score 7: High Utility Debugging Tools
+
+### 8. Automated ROP Chain & Gadget Finder (`find_rop_gadgets`)
+- **Category**: Vulnerability Analysis & Exploitation
+- **Rationale**: Finding ROP gadgets manually in disassembled modules is time-consuming.
+- **Functionality**: Scans loaded executable modules for useful Return-Oriented Programming (ROP) gadgets (e.g. `pop rcx; ret`, `mov [rax], rbx; ret`, `xchg rax, rsp`), filtering and categorizing them by register operation.
+```python
+find_rop_gadgets(
+    disassemble_cmd="u 0x00401000 L100",
+    target_module="target.exe"
+)
+```
+
+### 9. Heuristic Heap Corruption & UAF Detector (`audit_heap_corruption`)
+- **Category**: Memory Safety & Vulnerability Triage
+- **Rationale**: Heap corruption, double free, and use-after-free (UAF) bugs are notoriously hard to debug.
+- **Functionality**: Automates WinDbg `!heap -p -a` and Pageheap diagnostic flags to pinpoint corrupted chunk headers, freed allocation stack traces, and invalid free addresses.
+```python
+audit_heap_corruption(
+    heap_cmd="!heap -p -a 0x021b0000",
+    pageheap_cmd="!heap -flt s 0x20"
+)
+```
+
+
 
