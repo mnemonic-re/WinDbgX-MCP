@@ -76,56 +76,81 @@ WinDbgMCP supports 11 AI provider configurations. **Zero hardcoding rule**: API 
 
 ---
 
-## 2. Setting Environment Variables Outside an IDE
+## 2. Setting Environment Variables & Running Outside an IDE (Exiting Antigravity)
 
-If you run `WinDbgMCP` from a command prompt, terminal, batch script, or standalone Python server outside of an IDE, set your environment variables prior to launching the server:
+When you exit Google Antigravity or any IDE and want to run **WinDbgMCP** with your choice of AI provider and API keys, you can run WinDbgMCP in **Standalone Stdio Mode** or **Standalone SSE HTTP Server Mode**.
 
-### A. Windows PowerShell
+### Step 1: Set Your Provider API Key
+
+Set the environment variable corresponding to your preferred provider in your terminal session before launching:
+
+#### A. Windows PowerShell
 ```powershell
-# Set for current PowerShell session
+# Google Gemini
 $env:GEMINI_API_KEY="AIzaSyYourActualGoogleGeminiKeyHere"
+
+# OpenAI
 $env:OPENAI_API_KEY="sk-proj-YourActualOpenAIKeyHere"
+
+# Anthropic Claude
 $env:ANTHROPIC_API_KEY="sk-ant-YourActualAnthropicKeyHere"
-$env:MISTRAL_API_KEY="your_mistral_api_key"
+
+# Groq / DeepSeek
 $env:GROQ_API_KEY="gsk_your_groq_api_key"
-$env:CEREBRAS_API_KEY="csk-your_cerebras_api_key"
+
+# OpenRouter (Free & Paid Models)
 $env:OPENROUTER_API_KEY="sk-or-v1-your_openrouter_key"
-
-# Launch WinDbgMCP server
-python -m windbg_mcp
 ```
 
-### B. Windows Command Prompt (CMD)
+#### B. Windows Command Prompt (CMD)
 ```cmd
-:: Set for current CMD session
+:: Google Gemini
 set GEMINI_API_KEY=AIzaSyYourActualGoogleGeminiKeyHere
-set OPENAI_API_KEY=sk-proj-YourActualOpenAIKeyHere
-set ANTHROPIC_API_KEY=sk-ant-YourActualAnthropicKeyHere
-set MISTRAL_API_KEY=your_mistral_api_key
-set GROQ_API_KEY=gsk_your_groq_api_key
 
-:: Launch WinDbgMCP server
-python -m windbg_mcp
+:: OpenAI
+set OPENAI_API_KEY=sk-proj-YourActualOpenAIKeyHere
+
+:: Anthropic Claude
+set ANTHROPIC_API_KEY=sk-ant-YourActualAnthropicKeyHere
 ```
 
-### C. Permanent Windows Environment Variables (`setx`)
+#### C. Permanent System-Wide Environment Variables (`setx`)
 ```cmd
-:: Persist variables across future command prompt and system sessions
+:: Persist across all future terminal windows (restart prompt after running setx)
 setx GEMINI_API_KEY "AIzaSyYourActualGoogleGeminiKeyHere"
 setx OPENAI_API_KEY "sk-proj-YourActualOpenAIKeyHere"
 setx ANTHROPIC_API_KEY "sk-ant-YourActualAnthropicKeyHere"
 ```
 
-### D. Linux / macOS Terminal (Bash / Zsh)
+#### D. Linux / macOS Terminal (Bash / Zsh)
 ```bash
-# Export variables for current terminal session
 export GEMINI_API_KEY="AIzaSyYourActualGoogleGeminiKeyHere"
 export OPENAI_API_KEY="sk-proj-YourActualOpenAIKeyHere"
 export ANTHROPIC_API_KEY="sk-ant-YourActualAnthropicKeyHere"
-
-# Launch WinDbgMCP server
-python3 -m windbg_mcp
 ```
+
+---
+
+### Step 2: Launching WinDbgMCP Outside an IDE
+
+You have two choices for launching the server depending on your external consumer:
+
+#### Mode A: Standalone Stdio Mode (Default for CLI Tools)
+Use Stdio mode if you are invoking WinDbgMCP from command-line AI clients (Claude Code CLI, custom Python scripts, or command-line LLM runners):
+
+```bash
+# From WinDbgMCP root directory
+python -m windbg_mcp
+```
+
+#### Mode B: Standalone SSE Network Mode (HTTP Server)
+Use SSE mode if you want WinDbgMCP running as a background network service accessible via standard HTTP/JSON-RPC by external web apps, custom Python scripts, or remote LLM agents:
+
+```bash
+# Launch HTTP SSE server on port 8000
+python -m windbg_mcp --sse --port 8000
+```
+Once launched, the server streams tools and endpoints live on `http://localhost:8000/sse`.
 
 ---
 
@@ -172,34 +197,71 @@ When running `WinDbgMCP` inside an IDE or desktop MCP host (Google Antigravity, 
 
 ---
 
-## 4. Programmatic Python API Usage
+## 4. Programmatic Python API & Custom Script Usage
 
-You can also initialize and query AI providers programmatically in Python scripts:
+If you exit Antigravity and write custom Python scripts or automated agents to interact with WinDbgMCP using your API key:
 
+### Example A: Direct Python Server Initialization
 ```python
 import os
 from windbg_mcp.ai_provider import AIProviderConfig, get_available_ai_providers
 
-# 1. Scan available environment configurations
-status = get_available_ai_providers()
-print(f"Gemini Status: {status['gemini']['status']}")
+# 1. Set or confirm your API key in code/environment
+os.environ["GEMINI_API_KEY"] = "AIzaSyYourActualGoogleGeminiKeyHere"
 
-# 2. Configure provider (will read GEMINI_API_KEY from os.environ)
-cfg = AIProviderConfig(provider="gemini", model="gemini-1.5-pro")
+# 2. Check provider availability status
+status = get_available_ai_providers()
+print(f"Gemini Status: {status['gemini']['status']}")  # Outputs: configured
+
+# 3. Initialize AI provider configuration object
+cfg = AIProviderConfig(provider="gemini", model="gemini-3.5-flash")
 print(cfg.to_dict())
 # Outputs:
 # {
 #   'provider': 'gemini',
 #   'base_url': 'https://generativelanguage.googleapis.com',
-#   'model': 'gemini-1.5-pro',
+#   'model': 'gemini-3.5-flash',
 #   'api_key_set': True,
 #   'masked_api_key': 'AIza...1234'
 # }
 ```
 
+### Example B: Programmatic Tool Execution in Custom Python Script
+```python
+import asyncio
+from windbg_mcp.server import mcp
+
+async def run_standalone_debugger():
+    # Call any FastMCP tool programmatically without an IDE
+    result = await mcp.call_tool("get_ai_provider_status", {})
+    print(result)
+
+if __name__ == "__main__":
+    asyncio.run(run_standalone_debugger())
+```
+
 ---
 
-## 5. MCP Tools for AI Provider Management
+## 5. Quick-Start One-Liner Launcher Scripts
+
+Create these quick shortcut scripts in your project root to start WinDbgMCP with your preferred provider outside of any IDE:
+
+### `start_gemini.bat` (Windows Batch)
+```cmd
+@echo off
+set GEMINI_API_KEY=AIzaSyYourActualGoogleGeminiKeyHere
+python -m windbg_mcp
+```
+
+### `start_openai.ps1` (PowerShell)
+```powershell
+$env:OPENAI_API_KEY="sk-proj-YourActualOpenAIKeyHere"
+python -m windbg_mcp
+```
+
+---
+
+## 6. MCP Tools for AI Provider Management
 
 WinDbgMCP exposes two dedicated FastMCP tools for AI provider inspection:
 
