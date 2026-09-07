@@ -85,30 +85,41 @@ class DebugSession:
         # Wait for initial banner and prompt
         initial_output = self._wait_for_initial_prompt(timeout_seconds)
         
-        # Load DebugExt (de.dll) automatically if available
-        self._try_load_extension()
+        # Load DebugExt (de.dll) automatically if local session
+        if not any("-remote" in str(arg) for arg in cmd_args):
+            self._try_load_extension()
 
         return initial_output
 
     def _read_output_loop(self) -> None:
-        """Background thread reading lines from debugger stdout with batched lock acquisition."""
+        """Background thread reading raw stdout bytes from debugger OS pipe without buffering stalls."""
         if not self.process or not self.process.stdout:
             return
 
         try:
-            batch: List[str] = []
+            fd = self.process.stdout.fileno()
+            curr_chunk = ""
             while not self.closed and self.process and self.process.poll() is None:
-                line = self.process.stdout.readline()
-                if not line:
-                    break
-                batch.append(line)
-                if len(batch) >= 50 or not self.output_buffer:
-                    with self.lock:
-                        self.output_buffer.extend(batch)
-                    batch = []
-            if batch:
+                try:
+                    data = os.read(fd, 4096)
+                    if not data:
+                        break
+                    text = data.decode("utf-8", errors="replace")
+                    curr_chunk += text
+                    lines = curr_chunk.splitlines(keepends=True)
+                    if len(lines) > 1:
+                        with self.lock:
+                            self.output_buffer.extend(lines[:-1])
+                        curr_chunk = lines[-1]
+                    if PROMPT_REGEX.search(curr_chunk) or "Connected to server with" in curr_chunk:
+                        with self.lock:
+                            self.output_buffer.append(curr_chunk)
+                        curr_chunk = ""
+                except Exception:
+                    time.sleep(0.02)
+            if curr_chunk:
                 with self.lock:
-                    self.output_buffer.extend(batch)
+                    self.output_buffer.append(curr_chunk)
         except Exception:
             pass
 
@@ -207,19 +218,11 @@ class DebugSession:
                     captured_lines.extend(self.output_buffer)
                     self.output_buffer.clear()
 
-            # Look for sequence marker in lines
-            marker_found = False
-            result_lines: List[str] = []
-
-            for line in captured_lines:
-                if marker in line:
-                    marker_found = True
-                    break
-                result_lines.append(line)
-
-            if marker_found:
-                full_result = "".join(result_lines)
-                return sanitize_debug_output(full_result)
+            # Look for sequence marker in accumulated captured lines
+            full_text = "".join(captured_lines)
+            if marker in full_text:
+                result_text = full_text.split(marker)[0]
+                return sanitize_debug_output(result_text)
 
             time.sleep(0.05)
 
