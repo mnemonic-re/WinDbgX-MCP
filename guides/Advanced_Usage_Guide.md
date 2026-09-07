@@ -228,3 +228,31 @@ unpack_dynamic_pe(
 )
 ```
 
+---
+
+## 12. ⚡ Score 8: Advanced Reverse Engineering & Integrity Checks
+
+### 6. DKOM & Kernel Driver Integrity Auditor (`audit_kernel_integrity`)
+- **Category**: Kernel Mode & Rootkit Analysis
+- **Rationale**: Detecting kernel-level rootkits, DKOM process hiding, and driver hooks.
+- **Functionality**: Traverses active `EPROCESS` doubly-linked lists to find hidden processes, audits System Service Descriptor Tables (SSDT), and inspects driver `DRIVER_OBJECT` MajorFunction dispatch arrays for unbacked hook pointers.
+```python
+audit_kernel_integrity(
+    process_list_cmd="!process 0 0",
+    ssdt_dump_cmd="dps nt!KiServiceTable L100",
+    drivers_dump_cmd="!drvobj \\Driver\\Disk 2"
+)
+```
+
+### 7. Thread Callstack Anomaly & Stack Spoofing Scanner (`scan_stack_spoofing`)
+- **Category**: Exploit Analysis & Detection Evasion
+- **Rationale**: Modern malware uses call stack spoofing and ROP chains to bypass security products.
+- **Functionality**: Inspects thread stack frames for unbacked return addresses (addresses pointing to unmapped or RWX memory), stack alignment anomalies, and fake stack frames.
+```python
+scan_stack_spoofing(
+    stack_cmd="kb 20",
+    memory_map_cmd="!de.memmap"
+)
+```
+
+

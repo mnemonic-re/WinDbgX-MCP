@@ -29,6 +29,8 @@ from windbg_mcp.re_superpowers import (
     synthesize_crash_triage_report,
     build_api_trace_payload,
     parse_pe_header_in_memory,
+    audit_kernel_integrity_report,
+    scan_stack_spoofing_report,
 )
 
 # Initialize FastMCP Server
@@ -404,6 +406,35 @@ def unpack_dynamic_pe(
     writemem_cmd = f".writemem {output_filename} {address} L?{length}"
     export_result = session.run_command(writemem_cmd, reasoning=f"Exporting unpacked PE payload to disk artifact '{output_filename}'")
     return f"{pe_info}\n\n### Export Result\n```text\n{export_result}\n```"
+
+
+@mcp.tool()
+def audit_kernel_integrity(
+    process_list_cmd: str = "!process 0 0",
+    ssdt_dump_cmd: Optional[str] = None,
+    drivers_dump_cmd: Optional[str] = None,
+    session_id: Optional[str] = None,
+) -> str:
+    """[Score 8 Superpower] Audit kernel EPROCESS lists, System Service Descriptor Table (SSDT), and driver MajorFunction arrays for DKOM rootkits, hidden processes, and unbacked hooks."""
+    session = get_session(session_id)
+    raw_proc = session.run_command(process_list_cmd, reasoning="Auditing kernel EPROCESS list for DKOM hidden processes")
+    raw_ssdt = session.run_command(ssdt_dump_cmd, reasoning="Dumping SSDT dispatch table") if ssdt_dump_cmd else ""
+    raw_drivers = session.run_command(drivers_dump_cmd, reasoning="Auditing driver MajorFunction dispatch tables") if drivers_dump_cmd else ""
+    return audit_kernel_integrity_report(raw_proc, raw_ssdt, raw_drivers)
+
+
+@mcp.tool()
+def scan_stack_spoofing(
+    stack_cmd: str = "kb 20",
+    memory_map_cmd: Optional[str] = None,
+    session_id: Optional[str] = None,
+) -> str:
+    """[Score 8 Superpower] Inspect thread stack frames for unbacked return addresses (pointing to unmapped/RWX memory), stack pointer alignment anomalies, and fake stack frames (ROP chains)."""
+    session = get_session(session_id)
+    raw_stack = session.run_command(stack_cmd, reasoning="Inspecting thread callstack for unbacked return addresses and stack spoofing")
+    raw_map = session.run_command(memory_map_cmd, reasoning="Fetching virtual memory map for stack frame protection audit") if memory_map_cmd else ""
+    return scan_stack_spoofing_report(raw_stack, raw_map)
+
 
 
 @mcp.tool()

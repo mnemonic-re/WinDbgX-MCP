@@ -156,6 +156,8 @@ WinDbgMCP supports dynamic resolution for all modern LLM providers:
 | `reconstruct_struct` | Superpower | Auto-reconstruct C/C++ struct definitions & ReClass.NET schemas from memory |
 | `trace_api_calls` | Superpower | Generate WinAPI tracing breakpoint sets & argument interception payloads |
 | `unpack_dynamic_pe` | Superpower | Scan dynamic memory for PE signatures (MZ/PE), validate headers, & export payloads |
+| `audit_kernel_integrity` | Superpower | Audit kernel EPROCESS lists, SSDT tables, & driver dispatch arrays for DKOM & rootkits |
+| `scan_stack_spoofing` | Superpower | Inspect thread stack frames for unbacked return addresses, alignment anomalies, & ROP chains |
 | `get_ai_provider_status` | AI Management | Scan 11 AI providers (Gemini, OpenAI, Anthropic, etc.) & env setup status |
 | `configure_ai_provider` | AI Management | Initialize & validate AI provider config from environment variables |
 

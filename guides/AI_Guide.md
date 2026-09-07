@@ -317,6 +317,8 @@ Examples:
 | | `reconstruct_struct` | Parse pointer offsets and memory layouts into clean C/C++ struct definitions. |
 | | `trace_api_calls` | Monitor API calls and parameters dynamically during process execution. |
 | | `unpack_dynamic_pe` | Detect, unpack, and dump dynamically loaded/decrypted PE payloads from process memory. |
+| | `audit_kernel_integrity` | Audit kernel EPROCESS lists, SSDT tables, and driver dispatch arrays for DKOM & rootkits. |
+| | `scan_stack_spoofing` | Inspect thread stack frames for unbacked return addresses (pointing to unmapped/RWX memory), alignment anomalies, and fake stack frames. |
 | **Auxiliary & Extensions** | `load_extension` | Load external WinDbg extensions (`.load`). |
 | | `execute_script` | Run debugger engine scripts. |
 | | `search_symbols` | Search module symbol tables (`x`). |
