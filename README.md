@@ -3,6 +3,12 @@
 > [!IMPORTANT]
 > **DEVELOPMENT NOTICE**: WinDbgMCP & DebugExt (`de.dll`) are under active development. **Pull Requests (PRs) are currently CLOSED**. However, feedback and **Issues** are welcome — please report bugs or feature suggestions on GitHub Issues!
 
+> [!CAUTION]
+> **CRITICAL SECURITY LOCK**: The master driver [`SYSTEM_PROMPT.md`](SYSTEM_PROMPT.md) is set to **Read-Only** by default to prevent prompt injection and unauthorized modification during live AI debugging sessions. If you need to edit master directives:
+> 1. Unlock: `attrib -r SYSTEM_PROMPT.md` *(or `(Get-Item SYSTEM_PROMPT.md).IsReadOnly = $false` in PowerShell)*
+> 2. Make your edits and save.
+> 3. Re-lock for security: `attrib +r SYSTEM_PROMPT.md` *(or `(Get-Item SYSTEM_PROMPT.md).IsReadOnly = $true`)*
+
 Model Context Protocol (MCP) server for **WinDbg** & **WinDbgX**, custom-built for **Google Antigravity**, Claude Code, Cursor, Codex, Cline, Windsurf, VS Code, OpenAI / OpenAI-Compatible frameworks, and Local LLMs (Ollama / LM Studio).
 
 WinDbgMCP bridges AI coding assistants directly into live Windows debugging sessions (user-mode, kernel-mode, remote targets, and crash dumps), pairing standard debugger automation with advanced reverse-engineering analysis engines ported from **DebugExt** (`de.dll`).
