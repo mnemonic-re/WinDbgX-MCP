@@ -35,6 +35,8 @@ def find_debugext_dll() -> List[str]:
     user_home = Path.home()
 
     candidates = [
+        str(workspace_root / "binaries" / "extensions" / "x64"),
+        str(workspace_root / "binaries" / "extensions" / "x86"),
         str(workspace_root / "binaries" / "extensions"),
         str(parent_dir / "DebugExt" / "DebugExt" / "x64" / "Release"),
         str(parent_dir / "DebugExt" / "DebugExt" / "Release"),
@@ -43,7 +45,7 @@ def find_debugext_dll() -> List[str]:
         str(user_home / "source" / "repos" / "DebugExt" / "x64" / "Release"),
     ]
     existing = [c for c in candidates if os.path.exists(c)]
-    return existing if existing else candidates[:1]
+    return existing if existing else candidates[:3]
 
 
 def find_python_executable() -> str:

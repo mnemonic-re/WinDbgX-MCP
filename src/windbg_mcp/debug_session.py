@@ -147,9 +147,19 @@ class DebugSession:
         raise DebuggerError(f"Debugger timed out after {timeout_seconds}s waiting for initial prompt.")
 
     def _try_load_extension(self) -> None:
-        """Attempt to load de.dll (DebugExt) automatically."""
+        """Attempt to load de.dll (DebugExt) automatically with local workspace fallback."""
         try:
-            self.run_command(".load de", timeout_seconds=5.0)
+            res = self.run_command(".load de", timeout_seconds=5.0)
+            if "cannot find the file specified" in res.lower() or "error" in res.lower():
+                ws_root = Path(__file__).resolve().parent.parent.parent
+                cand_64 = ws_root / "binaries" / "extensions" / "x64" / "de.dll"
+                cand_86 = ws_root / "binaries" / "extensions" / "x86" / "de.dll"
+                cand_root = ws_root / "binaries" / "extensions" / "de.dll"
+
+                for cand in (cand_64, cand_86, cand_root):
+                    if cand.exists():
+                        self.run_command(f".load {cand}", timeout_seconds=5.0)
+                        break
         except Exception:
             pass  # Silent fallback if de.dll is not in search path
 

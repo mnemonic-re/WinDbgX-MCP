@@ -8,6 +8,14 @@ binaries/*
 !binaries/.gitkeep
 !binaries/extensions/
 !binaries/extensions/.gitkeep
+!binaries/extensions/x64/
+!binaries/extensions/x64/.gitkeep
+!binaries/extensions/x86/
+!binaries/extensions/x86/.gitkeep
+binaries/extensions/*/*.dll
+binaries/extensions/*/*.pdb
+binaries/extensions/*/*.exp
+binaries/extensions/*/*.lib
 
 # Python byte-compiled / optimized / DLL files
 __pycache__/
