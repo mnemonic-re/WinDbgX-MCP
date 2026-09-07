@@ -14,6 +14,7 @@ from typing import Dict, List, Optional
 
 from mcp.server.fastmcp import FastMCP, Context
 
+from windbg_mcp.ai_provider import AIProviderConfig, get_available_ai_providers
 from windbg_mcp.cdb_session import (
     attach_live_process_session,
     open_cdb_dump_session,
@@ -606,6 +607,54 @@ def audit_pe_security(target: Optional[str] = None, reasoning: Optional[str] = N
     session = get_session(session_id)
     cmd = f"pe {target}" if target else "pe"
     return session.run_command(cmd, reasoning=reasoning)
+
+
+# -----------------------------------------------------------------------------
+# Category H: AI Provider Management Tools
+# -----------------------------------------------------------------------------
+
+@mcp.tool()
+def get_ai_provider_status() -> str:
+    """Scan and list all 11 supported AI Providers (Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, OpenRouter) and environment variable setup status."""
+    providers = get_available_ai_providers()
+    lines = ["### Supported AI Providers & Environment Status\n"]
+    lines.append("| Provider | Environment Variable | Configuration Status | Value / Note |")
+    lines.append("| :--- | :--- | :--- | :--- |")
+
+    for p_name, details in providers.items():
+        status_icon = "✅ Configured" if details["configured"] else "❌ Missing Environment Variable"
+        lines.append(f"| `{p_name}` | `{details['env_var']}` | {status_icon} | `{details['status']}` |")
+
+    lines.append("\n> **Note**: API keys are dynamically resolved from environment variables with zero hardcoding.")
+    return "\n".join(lines)
+
+
+@mcp.tool()
+def configure_ai_provider(
+    provider: str = "openrouter",
+    model: str = "gpt-4o",
+    base_url: Optional[str] = None,
+    api_key: Optional[str] = None,
+) -> str:
+    """Initialize and validate an AI provider configuration (Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, OpenRouter)."""
+    try:
+        cfg = AIProviderConfig(
+            provider=provider,
+            model=model,
+            base_url=base_url,
+            api_key=api_key,
+        )
+        info = cfg.to_dict()
+        return (
+            f"### AI Provider Configured Successfully\n\n"
+            f"- **Provider**: `{info['provider']}`\n"
+            f"- **Base URL**: `{info['base_url']}`\n"
+            f"- **Model**: `{info['model']}`\n"
+            f"- **API Key Set**: `{info['api_key_set']}` (Masked: `{info['masked_api_key']}`)"
+        )
+    except Exception as e:
+        return f"### AI Provider Configuration Error\n\n**Error**: {str(e)}"
+
 
 
 # -----------------------------------------------------------------------------

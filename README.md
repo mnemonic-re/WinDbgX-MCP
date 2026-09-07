@@ -135,3 +135,14 @@ WinDbgMCP ships with ready-to-use configuration files under `configs/`:
 | `reconstruct_struct` | Superpower | Auto-reconstruct C/C++ struct definitions & ReClass.NET schemas from memory |
 | `trace_api_calls` | Superpower | Generate WinAPI tracing breakpoint sets & argument interception payloads |
 | `unpack_dynamic_pe` | Superpower | Scan dynamic memory for PE signatures (MZ/PE), validate headers, & export payloads |
+| `get_ai_provider_status` | AI Management | Scan 11 AI providers (Gemini, OpenAI, Anthropic, etc.) & env setup status |
+| `configure_ai_provider` | AI Management | Initialize & validate AI provider config from environment variables |
+
+---
+
+## Operational & Setup Guides
+
+- **[AI Provider Setup & Environment Guide](guides/AI_Provider_Setup_Guide.md)**: Detailed configuration for Google Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, and OpenRouter outside of IDEs (PowerShell, CMD, Bash) and inside MCP host JSONs.
+- **[AI Operational & Reversing Guide](guides/AI_Guide.md)**: Workspace directory hygiene rules (`analysis/<TARGET>/`), token-efficient live reversing protocols, and command reference catalogs.
+- **[Advanced Usage & Multi-Session Guide](guides/Advanced_Usage_Guide.md)**: Full architecture guide for remote CDB servers, kernel debugging, and multi-client setups.
+
