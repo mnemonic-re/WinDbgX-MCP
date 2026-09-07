@@ -72,6 +72,12 @@ When attaching to a desktop **WinDbg GUI** (`WinDbgX`) remote server:
 - To set a live breakpoint on a running target, issue `bp <address>`, or issue `g` to resume execution when waiting for user input.
 - Always check execution state before issuing long sequences of commands.
 
+### C. Live WinDbg GUI Visual Stepping Protocol
+- **Live GUI Visibility**: When attached to a desktop **WinDbg GUI** (`WinDbgX` / `DbgX.Shell.exe`) remote server (`tcp:port=...`), AI agents **MUST** make execution flow and disassembly movement visually trackable inside the user's desktop window:
+  - **Milestone Banners**: Execute `annotate_session(milestone="...")` before major stepping or analysis phases to stream DML-colorized block banners into the user's WinDbg GUI output window.
+  - **Live Disassembly Movement**: Issue `!de.disasm $ip L20` (or `u $ip L20`) after stepping (`p`, `t`, `gu`, `ret`, `toaddr`) so the user can visually watch the disassembly cursor and register panel move live in their WinDbg GUI window without digging through logs.
+  - **Intent Banners**: Pass the `reasoning` parameter on command execution tools so `=== [AI INTENT]: <reasoning> ===` streams live into the WinDbg GUI log before commands execute.
+
 ---
 
 ## 4. Summary Checklist for AI Agents
