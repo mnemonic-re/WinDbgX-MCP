@@ -10,16 +10,68 @@ WinDbgMCP supports 11 AI provider configurations. **Zero hardcoding rule**: API 
 
 | Provider Name | Required Environment Variable | Default Base URL | Default Model | Notes / Key Format |
 | :--- | :--- | :--- | :--- | :--- |
-| **`gemini`** | `GEMINI_API_KEY` | `https://generativelanguage.googleapis.com` | `gemini-1.5-pro` | Google Gemini API (`AIzaSy...`). `models/` prefix auto-trimmed. |
-| **`openai`** | `OPENAI_API_KEY` | `https://api.openai.com/v1` | `gpt-4o` | Official OpenAI API (`sk-proj-...`). |
-| **`anthropic`** | `ANTHROPIC_API_KEY` | `https://api.anthropic.com/v1` | `claude-3-5-sonnet-20240620` | Anthropic Claude API (`sk-ant-...`). |
-| **`mistral`** | `MISTRAL_API_KEY` | `https://api.mistral.ai/v1` | `mistral-large-latest` | Mistral AI API platform. |
-| **`groq`** | `GROQ_API_KEY` | `https://api.groq.com/openai/v1` | `llama-3.3-70b-versatile` | Groq LPU high-speed inference (`gsk_...`). |
-| **`cerebras`** | `CEREBRAS_API_KEY` | `https://api.cerebras.ai/v1` | `llama-3.3-70b` | Cerebras AI wafer-scale inference engine. |
-| **`openrouter`** | `OPENROUTER_API_KEY` | `https://openrouter.ai/api/v1` | `auto` | Unified router supporting 100+ open/closed models. |
-| **`ollama`** | `OLLAMA_API_KEY` / `OLLAMA_BASE_URL` | `https://ollama.com/v1` | `llama3.2` | Remote Ollama server instance. |
-| **`ollama_local`**| `OLLAMA_LOCAL_BASE_URL` | `http://localhost:11434/v1` | `llama3.2` | Local Ollama instance (Key defaults to `ollama`). |
-| **`local`** / **`lmstudio`** | `LOCAL_LLM_BASE_URL` | `http://localhost:1234/v1` | `local-model` | Local LM Studio / vLLM / LocalAI endpoint. |
+| **`gemini`** | `GEMINI_API_KEY` | `https://generativelanguage.googleapis.com` | `gemini-3.5-flash` | Google Gemini API (`AIzaSy...`). `models/` prefix auto-trimmed. |
+| **`openai`** | `OPENAI_API_KEY` | `https://api.openai.com/v1` | `gpt-5.6` | Official OpenAI API (`sk-proj-...`). |
+| **`anthropic`** | `ANTHROPIC_API_KEY` | `https://api.anthropic.com/v1` | `claude-5-opus` | Anthropic Claude API (`sk-ant-...`). |
+| **`mistral`** | `MISTRAL_API_KEY` | `https://api.mistral.ai/v1` | `codestral-latest` | Mistral AI API platform. |
+| **`groq`** | `GROQ_API_KEY` | `https://api.groq.com/openai/v1` | `deepseek-r1-distill-llama-70b` | Groq LPU high-speed inference (`gsk_...`). |
+| **`cerebras`** | `CEREBRAS_API_KEY` | `https://api.cerebras.ai/v1` | `gpt-oss-120b` | Cerebras AI wafer-scale inference engine. |
+| **`openrouter`** | `OPENROUTER_API_KEY` | `https://openrouter.ai/api/v1` | `nvidia/nemotron-3-nano-30b-a3b:free` | Unified router supporting free & paid models. |
+| **`ollama`** | `OLLAMA_API_KEY` / `OLLAMA_BASE_URL` | `https://ollama.com/v1` | `qwen3-coder` | Remote Ollama server instance. |
+| **`ollama_local`**| `OLLAMA_LOCAL_BASE_URL` | `http://localhost:11434/v1` | `qwen3-coder` | Local Ollama instance (Key defaults to `ollama`). |
+| **`local`** / **`lmstudio`** | `LOCAL_LLM_BASE_URL` | `http://localhost:1234/v1` | `qwen2.5-coder-14b-instruct-abliterated@q5_k_m` | Local LM Studio / vLLM / LocalAI endpoint. |
+
+---
+
+## 1.1 Frontier & Free Model Catalog
+
+### A. Google Gemini Models
+- `gemini-3.5-flash` *(Recommended / Default)*
+- `gemini-3.5-flash-lite`
+- `gemini-3.6-flash`
+- `gemini-3.7-flash`
+- `gemini-3.1-flash-lite`
+- `gemini-3.1-pro-preview`
+- `gemini-2.5-flash`
+- `gemini-2.5-flash-lite`
+- `gemini-2.5-pro`
+
+### B. OpenAI Frontier Models
+- `gpt-5.6` *(Flagship / Highest Reasoning)*
+- `gpt-5.5`
+- `gpt-5`
+- `gpt-4.5`
+- `gpt-4o`
+
+### C. Anthropic Frontier Models
+- `claude-5-opus` *(Flagship Frontier)*
+- `claude-4.5-sonnet`
+- `claude-4-opus`
+- `claude-3-7-sonnet`
+- `claude-3-5-sonnet-20241022`
+
+### D. Mistral AI Models
+- `codestral-latest` *(Coding Focused)*
+- `mistral-large-latest`
+- `mistral-small-latest`
+
+### E. Groq & Cerebras High-Speed Inference
+- **Groq**: `deepseek-r1-distill-llama-70b`, `kimi-k2-instruct`, `llama-3.3-70b-versatile`
+- **Cerebras**: `gpt-oss-120b`, `llama-3.3-70b`
+
+### F. OpenRouter Free Tier Examples
+- `nvidia/nemotron-3-nano-30b-a3b:free` *(Very Fast / Lightweight)*
+- `google/gemma-4-31b-it:free` *(Fast / Balanced)*
+- `poolside/laguna-s-2.1:free` *(Fast / Coding-Focused)*
+- `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free` *(Fast / Reasoning)*
+- `nvidia/nemotron-3-super-120b-a12b:free` *(Fast / High Quality)*
+- `nvidia/nemotron-3-ultra-550b-a55b:free` *(Powerful / Deep Reasoning)*
+- `openai/gpt-oss-20b:free` *(Capable / Slower)*
+
+### G. Ollama & Local AI (LM Studio)
+- **Ollama Cloud**: `qwen3-coder`, `gpt-oss:120b`, `deepseek-v3.1`
+- **LM Studio / Local**: `qwen2.5-coder-14b-instruct-abliterated@q5_k_m`, `qwen3-14b-abliterated@q5_k_m`, `codestral-22b-v0.1-abliterated-v3`, `deepseek-coder-v2-lite-instruct@q5_k_m`
+
 
 ---
 

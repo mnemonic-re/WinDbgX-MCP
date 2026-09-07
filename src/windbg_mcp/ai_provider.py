@@ -107,6 +107,79 @@ class AIProviderConfig:
         }
 
 
+RECOMMENDED_MODELS: Dict[str, list[str]] = {
+    "gemini": [
+        "gemini-3.5-flash",
+        "gemini-3.5-flash-lite",
+        "gemini-3.6-flash",
+        "gemini-3.7-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-3.1-pro-preview",
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-lite",
+        "gemini-2.5-pro",
+    ],
+    "openai": [
+        "gpt-5.6",
+        "gpt-5.5",
+        "gpt-5",
+        "gpt-4.5",
+        "gpt-4o",
+    ],
+    "anthropic": [
+        "claude-5-opus",
+        "claude-4.5-sonnet",
+        "claude-4-opus",
+        "claude-3-7-sonnet",
+        "claude-3-5-sonnet-20241022",
+    ],
+    "mistral": [
+        "codestral-latest",
+        "mistral-large-latest",
+        "mistral-small-latest",
+    ],
+    "groq": [
+        "deepseek-r1-distill-llama-70b",
+        "kimi-k2-instruct",
+        "llama-3.3-70b-versatile",
+    ],
+    "cerebras": [
+        "gpt-oss-120b",
+        "llama-3.3-70b",
+    ],
+    "openrouter": [
+        "nvidia/nemotron-3-nano-30b-a3b:free",
+        "google/gemma-4-31b-it:free",
+        "poolside/laguna-s-2.1:free",
+        "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+        "nvidia/nemotron-3-super-120b-a12b:free",
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "openai/gpt-oss-20b:free",
+    ],
+    "ollama": [
+        "qwen3-coder",
+        "gpt-oss:120b",
+        "deepseek-v3.1",
+    ],
+    "ollama_local": [
+        "qwen3-coder",
+        "llama3.2",
+    ],
+    "local": [
+        "qwen2.5-coder-14b-instruct-abliterated@q5_k_m",
+        "qwen3-14b-abliterated@q5_k_m",
+        "codestral-22b-v0.1-abliterated-v3",
+        "deepseek-coder-v2-lite-instruct@q5_k_m",
+    ],
+    "lmstudio": [
+        "qwen2.5-coder-14b-instruct-abliterated@q5_k_m",
+        "qwen3-14b-abliterated@q5_k_m",
+        "codestral-22b-v0.1-abliterated-v3",
+        "deepseek-coder-v2-lite-instruct@q5_k_m",
+    ],
+}
+
+
 def get_available_ai_providers() -> Dict[str, Dict[str, Any]]:
     """Scan current environment variables and return active AI provider configurations."""
     env_keys = {
@@ -131,5 +204,7 @@ def get_available_ai_providers() -> Dict[str, Dict[str, Any]]:
             "env_var": env_var,
             "configured": is_set,
             "status": f"{val[:4]}...{val[-4:]}" if val and len(val) > 8 else ("Set" if is_set else "Not Set"),
+            "recommended_models": RECOMMENDED_MODELS.get(provider, []),
         }
     return result
+
