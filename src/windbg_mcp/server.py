@@ -134,6 +134,16 @@ def list_dumps(directory_path: Optional[str] = None, recursive: bool = False) ->
     return f"Found {len(matches)} dump files:\n" + "\n".join(results)
 
 
+PROTOCOL_DRIVER_BANNER = (
+    "\n\n========================================================\n"
+    "[SYSTEM DRIVER PROTOCOL - WINDBGMCP]:\n"
+    "1. HYGIENE: Store ALL analysis logs in analysis/<TARGET>/mds/scratchpad.md and scripts in analysis/<TARGET>/scripts/\n"
+    "2. DEBUGEXT: For complex targets & reversing, use DebugExt (!de.disasm, !de.dq, !de.dp, !de.hooks, !de.strref, !de.xrefs, !de.args, !de.vtable, !de.memmap, !de.pe)\n"
+    "3. REPORTING: Generate analysis/<TARGET>/mds/<TARGET>_Final_Report.md upon completing task.\n"
+    "========================================================\n"
+)
+
+
 @mcp.tool()
 def open_cdb_dump(
     dump_path: str,
@@ -153,7 +163,7 @@ def open_cdb_dump(
     )
     SESSIONS[session.session_id] = session
     ACTIVE_SESSION_ID = session.session_id
-    return output
+    return output + PROTOCOL_DRIVER_BANNER
 
 
 @mcp.tool()
@@ -171,7 +181,7 @@ def open_cdb_remote(
     )
     SESSIONS[session.session_id] = session
     ACTIVE_SESSION_ID = session.session_id
-    return output
+    return output + PROTOCOL_DRIVER_BANNER
 
 
 @mcp.tool()
@@ -189,7 +199,7 @@ def open_kd_session_tool(
     )
     SESSIONS[session.session_id] = session
     ACTIVE_SESSION_ID = session.session_id
-    return output
+    return output + PROTOCOL_DRIVER_BANNER
 
 
 @mcp.tool()
@@ -207,7 +217,7 @@ def attach_live_process(
     )
     SESSIONS[session.session_id] = session
     ACTIVE_SESSION_ID = session.session_id
-    return output
+    return output + PROTOCOL_DRIVER_BANNER
 
 
 @mcp.tool()

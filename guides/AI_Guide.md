@@ -1,5 +1,8 @@
 # WinDbgMCP - AI Agent Operational & Reversing Guide
 
+> [!IMPORTANT]
+> **MASTER SYSTEM DRIVER PROTOCOL**: All AI agents (Antigravity, Claude Code, Cursor, Codex, Windsurf, Cline, VS Code) **MUST** observe the root master driver defined in **[`SYSTEM_PROMPT.md`](../SYSTEM_PROMPT.md)**.
+
 This guide establishes mandatory operational protocols for AI agents (Google Antigravity, Claude Code, Cursor, Codex, Windsurf, OpenAI Assistants) conducting reverse-engineering, crash dump triage, and dynamic debugging using **WinDbgMCP**.
 
 ---

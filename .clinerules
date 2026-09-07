@@ -1,0 +1,3 @@
+# Root Client Driver Entrypoint
+# See SYSTEM_PROMPT.md for full Master Protocols.
+include: SYSTEM_PROMPT.md
