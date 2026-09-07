@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > **DEVELOPMENT NOTICE**: WinDbgMCP & DebugExt (`de.dll`) are under active development. **Pull Requests (PRs) are currently CLOSED**. However, feedback and **Issues** are welcome — please report bugs or feature suggestions on GitHub Issues!
 
-Model Context Protocol (MCP) server for **WinDbg** & **WinDbgX**, custom-built for **Google Antigravity**, Claude Code, Cursor, Windsurf, VS Code, OpenAI / OpenAI-Compatible frameworks, and Local LLMs (Ollama / LM Studio).
+Model Context Protocol (MCP) server for **WinDbg** & **WinDbgX**, custom-built for **Google Antigravity**, Claude Code, Cursor, Codex, Cline, Windsurf, VS Code, OpenAI / OpenAI-Compatible frameworks, and Local LLMs (Ollama / LM Studio).
 
 WinDbgMCP bridges AI coding assistants directly into live Windows debugging sessions (user-mode, kernel-mode, remote targets, and crash dumps), pairing standard debugger automation with advanced reverse-engineering analysis engines ported from **DebugExt** (`de.dll`).
 
@@ -45,7 +45,7 @@ If you want to watch AI debugging progress live on your desktop inside the graph
 WinDbgMCP supports two transport protocols:
 
 1. **Stdio Mode (Default)**:
-   - Launched automatically by desktop AI clients (Antigravity, Claude, Cursor) as a local background process via stdin/stdout.
+   - Launched automatically by desktop AI clients (Antigravity, Claude, Cursor, Codex, Cline) as a local background process via stdin/stdout.
    - Zero network overhead, zero firewall prompts, 100% local IPC.
    ```bash
    python -m windbg_mcp
@@ -102,6 +102,8 @@ WinDbgMCP ships with ready-to-use configuration files under `configs/`:
 - **Google Antigravity & Claude Code**: `configs/antigravity.mcp.json` or root `mcp.json`
 - **Claude Desktop**: `configs/claude_desktop.json`
 - **Cursor**: `configs/cursor.mcp.json`
+- **Codex**: `configs/codex.mcp.json`
+- **Cline (VS Code)**: `configs/cline.mcp.json`
 - **Windsurf**: `configs/windsurf.mcp.json`
 - **VS Code / Roo Code / Continue**: `configs/vscode_mcp.json`
 - **OpenAI & OpenAI-Compatible (OpenRouter, vLLM, LiteLLM)**: `configs/openai_agents.json`

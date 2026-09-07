@@ -13,7 +13,7 @@ python scripts/install_mcp.py
 ```
 
 ### Transport Options:
-- **Stdio Mode (Default)**: Spawns automatically via stdin/stdout for local AI apps (Antigravity, Claude, Cursor):
+- **Stdio Mode (Default)**: Spawns automatically via stdin/stdout for local AI apps (Antigravity, Claude, Cursor, Codex):
   ```bash
   python -m windbg_mcp
   ```

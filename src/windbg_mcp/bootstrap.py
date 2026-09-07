@@ -112,12 +112,21 @@ def build_mcp_server_config(python_bin: Optional[str] = None) -> Dict[str, Any]:
 
 
 def auto_register_antigravity(server_config: Dict[str, Any]) -> List[str]:
-    """Auto-register WinDbgMCP in Google Antigravity config files."""
+    """Auto-register WinDbgMCP in detected AI client configuration files."""
     user_home = Path.home()
+    appdata = os.environ.get("APPDATA") or str(user_home / "AppData" / "Roaming")
+
     config_paths = [
         user_home / ".antigravity" / "mcp.json",
         user_home / ".gemini" / "antigravity" / "mcp.json",
         user_home / ".claude" / "mcp.json",
+        user_home / ".codex" / "mcp.json",
+        user_home / ".openai" / "mcp.json",
+        user_home / ".cursor" / "mcp.json",
+        user_home / ".windsurf" / "mcp.json",
+        user_home / ".cline" / "mcp.json",
+        Path(appdata) / "Code" / "User" / "globalStorage" / "saoudrizwan.claude-dev" / "settings" / "cline_mcp_settings.json",
+        Path(appdata) / "Code" / "User" / "globalStorage" / "rooveteran.roo-cline" / "settings" / "cline_mcp_settings.json",
     ]
 
     registered = []

@@ -1,21 +1,27 @@
 # WinDbgMCP - Multi-AI Provider Setup & Environment Guide
 
-This document provides complete instructions for configuring and using external AI/LLM providers (Google Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, OpenRouter) with **WinDbgMCP**, both inside IDE environments (Google Antigravity, Cursor, VS Code, Claude Desktop) and in standalone command-line / terminal setups.
+This document provides complete instructions for configuring and using external AI/LLM providers (Google Gemini, OpenAI / Codex, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, OpenRouter) with **WinDbgMCP**, both inside IDE environments (Google Antigravity, Cursor, Codex, VS Code, Claude Desktop) and in standalone command-line / terminal setups.
 
 ---
 
 ## 1. Supported AI Providers & Resolution Logic
 
-WinDbgMCP supports 11 AI provider configurations. **Zero hardcoding rule**: API keys and base URLs are strictly read at runtime from environment variables.
+WinDbgMCP supports 17 AI provider configurations. **Zero hardcoding rule**: API keys and base URLs are strictly read at runtime from environment variables.
 
 | Provider Name | Required Environment Variable | Default Base URL | Default Model | Notes / Key Format |
 | :--- | :--- | :--- | :--- | :--- |
 | **`gemini`** | `GEMINI_API_KEY` | `https://generativelanguage.googleapis.com` | `gemini-3.5-flash` | Google Gemini API (`AIzaSy...`). `models/` prefix auto-trimmed. |
 | **`openai`** | `OPENAI_API_KEY` | `https://api.openai.com/v1` | `gpt-5.6` | Official OpenAI API (`sk-proj-...`). |
 | **`anthropic`** | `ANTHROPIC_API_KEY` | `https://api.anthropic.com/v1` | `claude-5-opus` | Anthropic Claude API (`sk-ant-...`). |
+| **`deepseek`** | `DEEPSEEK_API_KEY` | `https://api.deepseek.com/v1` | `deepseek-reasoner` | Official DeepSeek API (V3 & R1 reasoning). |
 | **`mistral`** | `MISTRAL_API_KEY` | `https://api.mistral.ai/v1` | `codestral-latest` | Mistral AI API platform. |
 | **`groq`** | `GROQ_API_KEY` | `https://api.groq.com/openai/v1` | `deepseek-r1-distill-llama-70b` | Groq LPU high-speed inference (`gsk_...`). |
 | **`cerebras`** | `CEREBRAS_API_KEY` | `https://api.cerebras.ai/v1` | `gpt-oss-120b` | Cerebras AI wafer-scale inference engine. |
+| **`together`** | `TOGETHER_API_KEY` | `https://api.together.xyz/v1` | `deepseek-ai/DeepSeek-R1` | Together AI open-model inference platform. |
+| **`grok`** / **`xai`** | `XAI_API_KEY` | `https://api.x.ai/v1` | `grok-2-latest` | xAI / Grok API endpoint. |
+| **`fireworks`** | `FIREWORKS_API_KEY` | `https://api.fireworks.ai/inference/v1` | `accounts/fireworks/models/deepseek-r1` | Fireworks fast inference engine. |
+| **`perplexity`** | `PERPLEXITY_API_KEY` | `https://api.perplexity.ai` | `sonar-pro` | Perplexity search-augmented LLM API. |
+| **`cohere`** | `COHERE_API_KEY` | `https://api.cohere.com/v2` | `command-r-plus` | Cohere Enterprise AI platform. |
 | **`openrouter`** | `OPENROUTER_API_KEY` | `https://openrouter.ai/api/v1` | `nvidia/nemotron-3-nano-30b-a3b:free` | Unified router supporting free & paid models. |
 | **`ollama`** | `OLLAMA_API_KEY` / `OLLAMA_BASE_URL` | `https://ollama.com/v1` | `qwen3-coder` | Remote Ollama server instance. |
 | **`ollama_local`**| `OLLAMA_LOCAL_BASE_URL` | `http://localhost:11434/v1` | `qwen3-coder` | Local Ollama instance (Key defaults to `ollama`). |
@@ -51,16 +57,23 @@ WinDbgMCP supports 11 AI provider configurations. **Zero hardcoding rule**: API 
 - `claude-3-7-sonnet`
 - `claude-3-5-sonnet-20241022`
 
-### D. Mistral AI Models
-- `codestral-latest` *(Coding Focused)*
-- `mistral-large-latest`
-- `mistral-small-latest`
+### D. DeepSeek Direct API
+- `deepseek-reasoner` *(DeepSeek R1)*
+- `deepseek-chat` *(DeepSeek V3)*
 
-### E. Groq & Cerebras High-Speed Inference
+### E. Mistral AI & Cohere Models
+- **Mistral**: `codestral-latest`, `mistral-large-latest`, `mistral-small-latest`
+- **Cohere**: `command-r-plus`, `command-r7b-12-2024`
+
+### F. Groq, Cerebras, Together AI, Fireworks & xAI (Grok)
 - **Groq**: `deepseek-r1-distill-llama-70b`, `kimi-k2-instruct`, `llama-3.3-70b-versatile`
 - **Cerebras**: `gpt-oss-120b`, `llama-3.3-70b`
+- **Together AI**: `deepseek-ai/DeepSeek-R1`, `Qwen/Qwen2.5-Coder-32B-Instruct`, `meta-llama/Llama-3.3-70B-Instruct-Turbo`
+- **Fireworks AI**: `accounts/fireworks/models/deepseek-r1`, `accounts/fireworks/models/qwen2p5-coder-32b-instruct`
+- **xAI / Grok**: `grok-2-latest`, `grok-beta`
+- **Perplexity**: `sonar-pro`, `sonar-reasoning-pro`
 
-### F. OpenRouter Free Tier Examples
+### G. OpenRouter Free Tier Examples
 - `nvidia/nemotron-3-nano-30b-a3b:free` *(Very Fast / Lightweight)*
 - `google/gemma-4-31b-it:free` *(Fast / Balanced)*
 - `poolside/laguna-s-2.1:free` *(Fast / Coding-Focused)*
@@ -69,7 +82,7 @@ WinDbgMCP supports 11 AI provider configurations. **Zero hardcoding rule**: API 
 - `nvidia/nemotron-3-ultra-550b-a55b:free` *(Powerful / Deep Reasoning)*
 - `openai/gpt-oss-20b:free` *(Capable / Slower)*
 
-### G. Ollama & Local AI (LM Studio)
+### H. Ollama & Local AI (LM Studio)
 - **Ollama Cloud**: `qwen3-coder`, `gpt-oss:120b`, `deepseek-v3.1`
 - **LM Studio / Local**: `qwen2.5-coder-14b-instruct-abliterated@q5_k_m`, `qwen3-14b-abliterated@q5_k_m`, `codestral-22b-v0.1-abliterated-v3`, `deepseek-coder-v2-lite-instruct@q5_k_m`
 
@@ -156,9 +169,9 @@ Once launched, the server streams tools and endpoints live on `http://localhost:
 
 ## 3. Configuring Environment Variables in IDEs & MCP Clients
 
-When running `WinDbgMCP` inside an IDE or desktop MCP host (Google Antigravity, Cursor, VS Code, Claude Desktop), supply environment variables inside your MCP configuration JSON:
+When running `WinDbgMCP` inside an IDE or desktop MCP host (Google Antigravity, Cursor, Codex, VS Code, Claude Desktop), supply environment variables inside your MCP configuration JSON:
 
-### A. Google Antigravity / Cursor / VS Code (`mcp.json`)
+### A. Google Antigravity / Cursor / Codex / VS Code (`mcp.json` or `codex.mcp.json`)
 ```json
 {
   "mcpServers": {

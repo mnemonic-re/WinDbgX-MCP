@@ -674,7 +674,7 @@ def audit_pe_security(target: Optional[str] = None, reasoning: Optional[str] = N
 
 @mcp.tool()
 def get_ai_provider_status() -> str:
-    """Scan and list all 11 supported AI Providers (Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, OpenRouter) and environment variable setup status."""
+    """Scan and list all 17 supported AI Providers (Gemini, OpenAI, Anthropic, DeepSeek, Mistral, Groq, Cerebras, Together, Grok/xAI, Fireworks, Perplexity, Cohere, Ollama, LM Studio, OpenRouter) and environment variable setup status."""
     providers = get_available_ai_providers()
     lines = ["### Supported AI Providers & Environment Status\n"]
     lines.append("| Provider | Environment Variable | Configuration Status | Value / Note |")
@@ -695,7 +695,7 @@ def configure_ai_provider(
     base_url: Optional[str] = None,
     api_key: Optional[str] = None,
 ) -> str:
-    """Initialize and validate an AI provider configuration (Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, OpenRouter)."""
+    """Initialize and validate an AI provider configuration (Gemini, OpenAI, Anthropic, DeepSeek, Mistral, Groq, Cerebras, Together, Grok/xAI, Fireworks, Perplexity, Cohere, Ollama, LM Studio, OpenRouter)."""
     try:
         cfg = AIProviderConfig(
             provider=provider,

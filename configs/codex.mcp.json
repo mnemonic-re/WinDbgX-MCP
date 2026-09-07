@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "windbg-mcp": {
+      "command": "python",
+      "args": [
+        "-m",
+        "windbg_mcp"
+      ],
+      "env": {
+        "_NT_SYMBOL_PATH": "srv*C:\\Symbols*https://msdl.microsoft.com/download/symbols",
+        "_NT_DEBUGGER_EXTENSION_PATH": "%USERPROFILE%\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\x64\\Release;%USERPROFILE%\\source\\repos\\WinDbgX\\DebugExt\\DebugExt\\Release"
+      }
+    }
+  },
+  "notes": "Compatible with OpenAI Codex, OpenAI Agents SDK, and OpenAI-compatible IDE extensions."
+}

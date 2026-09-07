@@ -152,6 +152,7 @@ WinDbgMCP supports all major AI client platforms via pre-configured JSON manifes
 - **Google Antigravity / Claude Code**: `configs/antigravity.mcp.json`
 - **Claude Desktop**: `configs/claude_desktop.json`
 - **Cursor**: `configs/cursor.mcp.json`
+- **Codex**: `configs/codex.mcp.json`
 - **Windsurf**: `configs/windsurf.mcp.json`
 - **VS Code**: `configs/vscode_mcp.json`
 - **OpenAI & OpenRouter**: `configs/openai_agents.json`

@@ -84,6 +84,42 @@ class AIProviderConfig:
             ).rstrip("/")
             self.api_key = self.api_key or "lm-studio"
 
+        elif self.provider in ("grok", "xai"):
+            self.base_url = (self.base_url or "https://api.x.ai/v1").rstrip("/")
+            self.api_key = self.api_key or os.environ.get("XAI_API_KEY")
+            if not self.api_key:
+                raise ValueError("XAI_API_KEY environment variable is not set.")
+
+        elif self.provider == "deepseek":
+            self.base_url = (self.base_url or "https://api.deepseek.com/v1").rstrip("/")
+            self.api_key = self.api_key or os.environ.get("DEEPSEEK_API_KEY")
+            if not self.api_key:
+                raise ValueError("DEEPSEEK_API_KEY environment variable is not set.")
+
+        elif self.provider == "together":
+            self.base_url = (self.base_url or "https://api.together.xyz/v1").rstrip("/")
+            self.api_key = self.api_key or os.environ.get("TOGETHER_API_KEY")
+            if not self.api_key:
+                raise ValueError("TOGETHER_API_KEY environment variable is not set.")
+
+        elif self.provider == "fireworks":
+            self.base_url = (self.base_url or "https://api.fireworks.ai/inference/v1").rstrip("/")
+            self.api_key = self.api_key or os.environ.get("FIREWORKS_API_KEY")
+            if not self.api_key:
+                raise ValueError("FIREWORKS_API_KEY environment variable is not set.")
+
+        elif self.provider == "perplexity":
+            self.base_url = (self.base_url or "https://api.perplexity.ai").rstrip("/")
+            self.api_key = self.api_key or os.environ.get("PERPLEXITY_API_KEY")
+            if not self.api_key:
+                raise ValueError("PERPLEXITY_API_KEY environment variable is not set.")
+
+        elif self.provider == "cohere":
+            self.base_url = (self.base_url or "https://api.cohere.com/v2").rstrip("/")
+            self.api_key = self.api_key or os.environ.get("COHERE_API_KEY")
+            if not self.api_key:
+                raise ValueError("COHERE_API_KEY environment variable is not set.")
+
         else:
             self.provider = "openrouter"
             self.api_key = self.api_key or os.environ.get("OPENROUTER_API_KEY")
@@ -171,11 +207,30 @@ RECOMMENDED_MODELS: Dict[str, list[str]] = {
         "codestral-22b-v0.1-abliterated-v3",
         "deepseek-coder-v2-lite-instruct@q5_k_m",
     ],
-    "lmstudio": [
-        "qwen2.5-coder-14b-instruct-abliterated@q5_k_m",
-        "qwen3-14b-abliterated@q5_k_m",
-        "codestral-22b-v0.1-abliterated-v3",
-        "deepseek-coder-v2-lite-instruct@q5_k_m",
+    "deepseek": [
+        "deepseek-reasoner",
+        "deepseek-chat",
+    ],
+    "together": [
+        "deepseek-ai/DeepSeek-R1",
+        "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+    ],
+    "grok": [
+        "grok-2-latest",
+        "grok-beta",
+    ],
+    "fireworks": [
+        "accounts/fireworks/models/deepseek-r1",
+        "accounts/fireworks/models/qwen2p5-coder-32b-instruct",
+    ],
+    "perplexity": [
+        "sonar-pro",
+        "sonar-reasoning-pro",
+    ],
+    "cohere": [
+        "command-r-plus",
+        "command-r7b-12-2024",
     ],
 }
 
@@ -184,16 +239,22 @@ def get_available_ai_providers() -> Dict[str, Dict[str, Any]]:
     """Scan current environment variables and return active AI provider configurations."""
     env_keys = {
         "gemini": "GEMINI_API_KEY",
+        "openai": "OPENAI_API_KEY",
+        "anthropic": "ANTHROPIC_API_KEY",
         "mistral": "MISTRAL_API_KEY",
         "groq": "GROQ_API_KEY",
         "cerebras": "CEREBRAS_API_KEY",
-        "openai": "OPENAI_API_KEY",
-        "anthropic": "ANTHROPIC_API_KEY",
+        "deepseek": "DEEPSEEK_API_KEY",
+        "together": "TOGETHER_API_KEY",
+        "grok": "XAI_API_KEY",
+        "fireworks": "FIREWORKS_API_KEY",
+        "perplexity": "PERPLEXITY_API_KEY",
+        "cohere": "COHERE_API_KEY",
+        "openrouter": "OPENROUTER_API_KEY",
         "ollama": "OLLAMA_API_KEY",
         "ollama_local": "OLLAMA_LOCAL_BASE_URL",
         "local": "LOCAL_LLM_BASE_URL",
         "lmstudio": "LOCAL_LLM_BASE_URL",
-        "openrouter": "OPENROUTER_API_KEY",
     }
 
     result = {}

@@ -1,6 +1,6 @@
 # WinDbgMCP - AI Agent Operational & Reversing Guide
 
-This guide establishes mandatory operational protocols for AI agents (Google Antigravity, Claude Code, Cursor, Windsurf, OpenAI Assistants) conducting reverse-engineering, crash dump triage, and dynamic debugging using **WinDbgMCP**.
+This guide establishes mandatory operational protocols for AI agents (Google Antigravity, Claude Code, Cursor, Codex, Windsurf, OpenAI Assistants) conducting reverse-engineering, crash dump triage, and dynamic debugging using **WinDbgMCP**.
 
 ---
 
