@@ -312,7 +312,7 @@ Examples:
 | | `search_memory` | Pattern match byte array or ASCII/Unicode strings (`s`). |
 | **Modules & Symbols** | `list_modules` | List loaded PE modules and base addresses (`lm`). |
 | | `evaluate_expression` | Evaluate C/C++ or MASM numerical expression (`?`). |
-| **Analysis Superpowers** | `diff_memory_snapshots` | Compare process memory state across execution points to identify dynamic modifications. |
+| **Analysis Engines** | `diff_memory_snapshots` | Compare process memory state across execution points to identify dynamic modifications. |
 | | `triage_crash_report` | Automated crash dump triage analyzing exception codes, faulting instruction, and stack context. |
 | | `reconstruct_struct` | Parse pointer offsets and memory layouts into clean C/C++ struct definitions. |
 | | `trace_api_calls` | Monitor API calls and parameters dynamically during process execution. |

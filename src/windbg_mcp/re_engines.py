@@ -1,4 +1,4 @@
-"""Extended Reverse Engineering & Crash Triage Superpowers Engine for WinDbgMCP.
+"""Extended Reverse Engineering & Crash Triage Analysis Engines for WinDbgMCP.
 
 Provides specialized algorithms for memory diffing, C/C++ struct reconstruction,
 automated crash dump RCA synthesis, dynamic WinAPI tracing, and in-memory PE header extraction.

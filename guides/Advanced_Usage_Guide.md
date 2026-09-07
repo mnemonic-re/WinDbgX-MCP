@@ -182,7 +182,7 @@ python scripts/install_mcp.py
 
 ---
 
-## 11. Reverse Engineering & Crash Triage Superpowers
+## 11. Extended Reverse Engineering & Crash Triage Engines
 
 WinDbgMCP includes 5 high-impact automation engines designed for memory forensics, crash analysis, and dynamic analysis:
 

@@ -23,7 +23,7 @@ from windbg_mcp.cdb_session import (
 from windbg_mcp.cfg_builder import build_cfg_mermaid
 from windbg_mcp.debug_session import DebugSession, DebuggerError
 from windbg_mcp.kd_session import open_kd_session
-from windbg_mcp.re_superpowers import (
+from windbg_mcp.re_engines import (
     diff_memory_bytes,
     reconstruct_struct_definition,
     synthesize_crash_triage_report,
