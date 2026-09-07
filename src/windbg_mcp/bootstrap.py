@@ -30,11 +30,15 @@ def ensure_symbol_directory() -> str:
 
 def find_debugext_dll() -> List[str]:
     """Search for built de.dll (DebugExt) binaries dynamically in workspace and user source trees."""
-    workspace_root = Path(__file__).resolve().parent.parent.parent
+    pkg_dir = Path(__file__).resolve().parent
+    workspace_root = pkg_dir.parent.parent
     parent_dir = workspace_root.parent
     user_home = Path.home()
 
     candidates = [
+        str(pkg_dir / "binaries" / "x64"),
+        str(pkg_dir / "binaries" / "x86"),
+        str(pkg_dir / "binaries"),
         str(workspace_root / "binaries" / "extensions" / "x64"),
         str(workspace_root / "binaries" / "extensions" / "x86"),
         str(workspace_root / "binaries" / "extensions"),

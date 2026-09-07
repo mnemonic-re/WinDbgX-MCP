@@ -15,6 +15,30 @@ WinDbgMCP bridges AI coding assistants directly into live Windows debugging sess
 
 ---
 
+## Installation & Distribution
+
+WinDbgMCP is distributed as a self-contained Python package bundling pre-compiled native `de.dll` binaries (x64 and x86). No C++ compiler or manual path configuration required.
+
+### Option 1: Direct Pip Wheel Installation (Pre-built Package)
+Install the pre-built `.whl` package directly via `pip`:
+```bash
+pip install https://raw.githubusercontent.com/mnemonic-re/WinDbgX-MCP/main/WinDbgMCP/dist/windbg_mcp-0.1.0-py3-none-any.whl
+```
+*(Or install locally if you cloned the repository: `pip install dist/windbg_mcp-0.1.0-py3-none-any.whl`)*
+
+### Option 2: Install from GitHub Repository Source
+```bash
+pip install git+https://github.com/mnemonic-re/WinDbgX-MCP.git#subdirectory=WinDbgMCP
+```
+
+### Option 3: Global Command Line Entry Point
+Once installed, launch the MCP server binary from any terminal or AI client host configuration:
+```bash
+windbg-mcp --help
+```
+
+---
+
 ## Quick Start (Automated Bootstrap)
 
 Automate all environment checks, debugger binary discovery (`cdb.exe`/`kd.exe`), symbol directory creation (`C:\Symbols`), and auto-register WinDbgMCP into all local AI client configurations with a single command:

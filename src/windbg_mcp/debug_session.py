@@ -151,12 +151,15 @@ class DebugSession:
         try:
             res = self.run_command(".load de", timeout_seconds=5.0)
             if "cannot find the file specified" in res.lower() or "error" in res.lower():
-                ws_root = Path(__file__).resolve().parent.parent.parent
+                pkg_dir = Path(__file__).resolve().parent
+                ws_root = pkg_dir.parent.parent
+                cand_pkg_64 = pkg_dir / "binaries" / "x64" / "de.dll"
+                cand_pkg_86 = pkg_dir / "binaries" / "x86" / "de.dll"
                 cand_64 = ws_root / "binaries" / "extensions" / "x64" / "de.dll"
                 cand_86 = ws_root / "binaries" / "extensions" / "x86" / "de.dll"
                 cand_root = ws_root / "binaries" / "extensions" / "de.dll"
 
-                for cand in (cand_64, cand_86, cand_root):
+                for cand in (cand_pkg_64, cand_pkg_86, cand_64, cand_86, cand_root):
                     if cand.exists():
                         self.run_command(f".load {cand}", timeout_seconds=5.0)
                         break
