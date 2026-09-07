@@ -32,6 +32,8 @@ WinDbgMCP/
 
 > [!TIP]
 > **DO NOT SPEND 50K TOKENS ON SIMPLE CRACKMES & BINARIES!**
+> 
+> *For simple crackmes and basic user-mode targets, follow the surgical 3-step workflow below to save context and tokens. However, for **complex executables, kernel drivers, packed targets, and deep reverse engineering**, AI agents are expected and strongly encouraged to use **ALL commands at their disposal** — particularly **DebugExt (`de.dll`)** bang commands (`!de.disasm`, `!de.dq`, `!de.dp`, `!de.hooks`, `!de.strref`, `!de.xrefs`, `!de.args`, `!de.vtable`, `!de.memmap`, `!de.peb`, `!de.pe`, etc.) and automated analysis engines. Refer to the complete **[WinDbg & DebugExt RE Command Reference](RE_Commands.md)** for full documentation.*
 
 Follow this exact 3-step surgical workflow for simple user-mode targets:
 
