@@ -1,8 +1,12 @@
 # WinDbgMCP
 
+> [!IMPORTANT]
+> **DEVELOPMENT NOTICE**: WinDbgMCP & DebugExt (`de.dll`) are under active development. **Pull Requests (PRs) are currently CLOSED**. However, feedback and **Issues** are welcome — please report bugs or feature suggestions on GitHub Issues!
+
 Model Context Protocol (MCP) server for **WinDbg** & **WinDbgX**, custom-built for **Google Antigravity**, Claude Code, Cursor, Windsurf, VS Code, OpenAI / OpenAI-Compatible frameworks, and Local LLMs (Ollama / LM Studio).
 
 WinDbgMCP bridges AI coding assistants directly into live Windows debugging sessions (user-mode, kernel-mode, remote targets, and crash dumps), pairing standard debugger automation with custom reverse-engineering superpowers ported from **DebugExt** (`de.dll`).
+
 
 ---
 
