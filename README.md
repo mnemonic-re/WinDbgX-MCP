@@ -182,7 +182,14 @@ WinDbgMCP supports dynamic resolution for all modern LLM providers:
 
 ## DebugExt (`de.dll`) Complete Command Reference Catalog
 
-Below is the complete reference catalog of ported bang (`!de.*`) commands provided by **DebugExt** (`de.dll`):
+Below is the complete reference catalog of ported bang (`!de.*`) commands provided by **DebugExt** (`de.dll`).
+
+### Loading & Unloading `de.dll` in WinDbg / CDB:
+- **Automatic Load**: `.load de` *(WinDbgMCP automatically configures `_NT_DEBUGGER_EXTENSION_PATH`)*
+- **Explicit 64-bit Load**: `.load binaries\extensions\x64\de.dll`
+- **Explicit 32-bit Load**: `.load binaries\extensions\x86\de.dll`
+- **Unload**: `.unload de`
+- **Interactive Help**: `!de.dxhelp`
 
 ```text
 ============================================================

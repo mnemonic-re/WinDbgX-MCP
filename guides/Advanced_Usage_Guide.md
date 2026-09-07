@@ -280,6 +280,19 @@ audit_heap_corruption(
     heap_cmd="!heap -p -a 0x021b0000",
     pageheap_cmd="!heap -flt s 0x20"
 )
+
+---
+
+## 14. DebugExt (`de.dll`) Extension Loading
+
+WinDbgMCP automatically configures `_NT_DEBUGGER_EXTENSION_PATH` to point to `binaries/extensions/x64` and `x86`.
+
+### Extension Load Commands:
+- **Automatic Load**: `.load de` (or `.load de.dll`)
+- **Explicit 64-bit Target Load**: `.load binaries\extensions\x64\de.dll`
+- **Explicit 32-bit Target Load**: `.load binaries\extensions\x86\de.dll`
+- **Unload Extension**: `.unload de`
+- **Interactive Help Catalog**: `!de.dxhelp`
 ```
 
 

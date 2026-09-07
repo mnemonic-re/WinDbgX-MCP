@@ -89,6 +89,17 @@ run_cdb_command(command="db RSP L64") # Display bytes & ASCII at stack pointer
 run_cdb_command(command="dc RSP L64") # Display dwords & symbol previews
 ```
 
+### E. Loading & Running DebugExt (`de.dll`)
+WinDbgMCP automatically sets `_NT_DEBUGGER_EXTENSION_PATH` to point to `binaries/extensions/`. Load the extension in your session:
+```python
+run_cdb_command(command=".load de")   # Auto-load de.dll
+run_cdb_command(command="!de.dxhelp") # Display interactive DebugExt help & status
+```
+Explicit load commands if needed:
+- 64-bit target: `run_cdb_command(command=".load binaries\\extensions\\x64\\de.dll")`
+- 32-bit target: `run_cdb_command(command=".load binaries\\extensions\\x86\\de.dll")`
+- Unload extension: `run_cdb_command(command=".unload de")`
+
 ---
 
 ## 5. Setting Breakpoints & Execution Control

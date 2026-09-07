@@ -69,6 +69,13 @@ A comprehensive reference catalog of standard native WinDbg / CDB commands and e
 
 `DebugExt` (`de.dll`) brings x64dbg-style analysis, DML-colorized output, telescoping pointer analysis, and security auditing directly into WinDbg / CDB sessions.
 
+### Loading & Unloading `de.dll`
+- **Automatic Load**: `.load de` *(WinDbgMCP automatically configures `_NT_DEBUGGER_EXTENSION_PATH` to point to `binaries/extensions/`)*
+- **Explicit 64-bit Load**: `.load binaries\extensions\x64\de.dll`
+- **Explicit 32-bit Load**: `.load binaries\extensions\x86\de.dll`
+- **Unload Extension**: `.unload de` or `.unload de.dll`
+- **Interactive Help**: `!de.dxhelp`
+
 ### Navigation & Execution Control
 | Command | Alias | Description |
 | :--- | :--- | :--- |
