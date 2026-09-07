@@ -60,6 +60,37 @@ def cleanup_all_sessions():
 atexit.register(cleanup_all_sessions)
 
 
+def load_embedded_system_prompt() -> str:
+    """Load embedded SYSTEM_PROMPT.md master instructions."""
+    pkg_dir = Path(__file__).resolve().parent
+    ws_root = pkg_dir.parent.parent
+    candidates = [
+        pkg_dir / "SYSTEM_PROMPT.md",
+        ws_root / "SYSTEM_PROMPT.md",
+        Path.cwd() / "SYSTEM_PROMPT.md",
+    ]
+    for cand in candidates:
+        if cand.exists():
+            try:
+                return cand.read_text(encoding="utf-8")
+            except Exception:
+                pass
+    return "WinDbgMCP Reverse Engineering Master Directives Protocol"
+
+
+@mcp.resource("windbg://system_prompt")
+def get_system_prompt_resource() -> str:
+    """Expose master reverse-engineering and visual stepping directives as an MCP resource."""
+    return load_embedded_system_prompt()
+
+
+@mcp.tool()
+def get_master_instructions() -> str:
+    """Get the official WinDbgMCP reverse-engineering master directives, visual disassembly stepping rules, scratchpad protocols, and report templates."""
+    return load_embedded_system_prompt()
+
+
+
 def get_session(session_id: Optional[str] = None) -> DebugSession:
     """Retrieve specified or default active session, automatically pruning dead/terminated sessions."""
     global ACTIVE_SESSION_ID
