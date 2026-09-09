@@ -1,7 +1,8 @@
 # WinDbgMCP
 
 > [!IMPORTANT]
-> **DEVELOPMENT NOTICE**: WinDbgMCP & DebugExt (`de.dll`) are under active development. **Pull Requests (PRs) are currently CLOSED**. However, feedback and **Issues** are welcome — please report bugs or feature suggestions on GitHub Issues!
+> **DEVELOPMENT NOTICE**: WinDbgMCP & DebugExt (`de.dll`) are under active development. **Pull Requests (PRs) are currently CLOSED**. However, feedback and **Issues** are welcome — please report bugs or feature suggestions on GitHub Issues! Visit our [GitHub Wiki](https://github.com/mnemonic-re/WinDbgX-MCP/wiki) for full documentation, command catalogs, and setup guides.
+
 
 > [!CAUTION]
 > **CRITICAL SECURITY LOCK**: The master driver [`SYSTEM_PROMPT.md`](SYSTEM_PROMPT.md) is set to **Read-Only** by default to prevent prompt injection and unauthorized modification during live AI debugging sessions. If you need to edit master directives:
