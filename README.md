@@ -307,11 +307,4 @@ Session Logger (Astro MDX):
 
 ---
 
-## Operational & Setup Guides
-
-- **[Real-World Case Study & Tool Usage Example](https://mnemonic-re.github.io/research-notebook/research/windbgx-mcp-ai-reverse-engineering-protocol/)**: Live benchmark demonstration of automated assembly reversing, keygen algorithm extraction, and visual stepping on `GigaApp.exe`.
-- **[AI Provider Setup & Environment Guide](guides/AI_Provider_Setup_Guide.md)**: Detailed configuration for Google Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, and OpenRouter outside of IDEs (PowerShell, CMD, Bash) and inside MCP host JSONs.
-- **[AI Operational & Reversing Guide](guides/AI_Guide.md)**: Workspace directory hygiene rules (`analysis/<TARGET>/`), token-efficient live reversing protocols, and command reference catalogs.
-- **[WinDbg & DebugExt RE Command Reference](guides/RE_Commands.md)**: Complete command reference catalog for native WinDbg / CDB commands and DebugExt (`de.dll`) bang commands (`!de.*`).
-- **[Advanced Usage & Multi-Session Guide](guides/Advanced_Usage_Guide.md)**: Full architecture guide for remote CDB servers, kernel debugging, and multi-client setups.
-- **[Developer & Architecture Guide](guides/CLAUDE.md)**: Internal developer guide, environment setup, and design rules for WinDbgMCP contributors.
+> 📖 **Full Documentation & Guides**: Visit our [GitHub Wiki](https://github.com/mnemonic-re/WinDbgX-MCP/wiki) for complete operational guides, AI provider configurations, command references, and architecture documentation.
