@@ -68,6 +68,9 @@ examples/
 tests/
 reports/
 analysis/
+scratch/
+prepare_wiki.py
+prepare_*.py
 TESTING_ADDON.md
 
 
