@@ -71,6 +71,14 @@ If you want to watch AI debugging progress live on your desktop inside the graph
 
 ---
 
+## 📖 Real-World Case Study & Tool Usage Example
+
+For a complete end-to-end demonstration of **WinDbgMCP** tool usage — featuring an AI agent performing automated assembly disassembly, algorithm extraction, key calculation for `GigaApp.exe`, and live visual stepping — read our published research article:
+
+👉 **[WinDbgX-MCP AI Reverse Engineering Protocol (GigaApp Case Study)](https://mnemonic-re.github.io/research-notebook/research/windbgx-mcp-ai-reverse-engineering-protocol/)**
+
+---
+
 ## Transport Modes: `stdio` (IPC) vs `sse` (Network HTTP)
 
 WinDbgMCP supports two transport protocols:
@@ -301,6 +309,7 @@ Session Logger (Astro MDX):
 
 ## Operational & Setup Guides
 
+- **[Real-World Case Study & Tool Usage Example](https://mnemonic-re.github.io/research-notebook/research/windbgx-mcp-ai-reverse-engineering-protocol/)**: Live benchmark demonstration of automated assembly reversing, keygen algorithm extraction, and visual stepping on `GigaApp.exe`.
 - **[AI Provider Setup & Environment Guide](guides/AI_Provider_Setup_Guide.md)**: Detailed configuration for Google Gemini, OpenAI, Anthropic, Mistral, Groq, Cerebras, Ollama, LM Studio, and OpenRouter outside of IDEs (PowerShell, CMD, Bash) and inside MCP host JSONs.
 - **[AI Operational & Reversing Guide](guides/AI_Guide.md)**: Workspace directory hygiene rules (`analysis/<TARGET>/`), token-efficient live reversing protocols, and command reference catalogs.
 - **[WinDbg & DebugExt RE Command Reference](guides/RE_Commands.md)**: Complete command reference catalog for native WinDbg / CDB commands and DebugExt (`de.dll`) bang commands (`!de.*`).

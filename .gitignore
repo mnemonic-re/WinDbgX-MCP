@@ -68,6 +68,8 @@ examples/
 tests/
 reports/
 analysis/
+TESTING_ADDON.md
+
 
 # IDEs, Editors & OS Files
 .vs/
